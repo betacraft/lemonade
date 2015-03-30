@@ -1,8 +1,11 @@
 package main
 
 import (
+	"github.com/go-zoo/bone"
 	"github.com/rainingclouds/lemonade/db"
+	"github.com/rainingclouds/lemonade/interceptors"
 	"github.com/rainingclouds/lemonade/logger"
+	"net/http"
 	"os"
 )
 
@@ -31,4 +34,7 @@ func main() {
 	// initializing routes
 	logger.Debug("Initializing routes")
 	mux := bone.New()
+	http.ListenAndServe(getPort(), interceptors.NewInterceptor(mux))
+	logger.Warn("Closing server")
+
 }
