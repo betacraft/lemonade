@@ -4,11 +4,8 @@ import (
 	"encoding/json"
 	"errors"
 	"github.com/mholt/binding"
-	"github.com/rainingclouds/lemonade/logger"
 	"io/ioutil"
 	"net/http"
-	"net/http/httputil"
-	"strings"
 )
 
 // a function to read thhe JSON body and return a map of string and interface
@@ -38,19 +35,4 @@ func Bind(r *http.Request, fm binding.FieldMapper) error {
 		return errors.New(err.Error())
 	}
 	return nil
-}
-
-func WriteError(w http.ResponseWriter, r *http.Request, c int, err error) {
-	requstDump, _ := httputil.DumpRequest(r, true)
-	logger.Get().Warning(err, "\n", strings.Trim(string(requstDump), "\n\r"))
-	w.Header().Add("Content-Type", "application/json")
-	w.WriteHeader(c)
-	res := JSONResponse{"message": err.Error(), "success": false}
-	w.Write(res.ByteArray())
-}
-
-func WriteResponse(w http.ResponseWriter, c int, r JSONResponse) {
-	w.Header().Add("Content-Type", "application/json")
-	w.WriteHeader(c)
-	w.Write(r.ByteArray())
 }

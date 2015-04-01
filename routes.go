@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"github.com/go-zoo/bone"
 	"github.com/rainingclouds/lemonade/controllers"
 	"github.com/rainingclouds/lemonade/interceptors"
@@ -12,9 +11,7 @@ import (
 // add all the new routes here
 // the kernel will take care of adding these routes in the routine
 func pushRoutes(mux *bone.Mux) {
-	mux.Get("/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprint(w, "Hello lemonade")
-	}))
+	mux.Get("/", http.HandlerFunc(controllers.Index))
 	// actual apis
 	// admin apis
 	mux.Post("/api/v1/admin", http.HandlerFunc(controllers.RegisterAdmin))
