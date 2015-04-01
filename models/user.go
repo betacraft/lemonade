@@ -45,15 +45,14 @@ type User struct {
 	Password          string `bson:"password" json:"-"`
 	ProfilePicLink    string `bson:"profile_pic" json:"profile_pic"`
 
+	CurrentMobileHandset string `bson:"current_handset" json:"current_handset"`
+	LookingForHandset    string `bson:"looking_for_handset" json:"looking_for_handset"`
+
 	OtpCode string `bson:"otp_code" json:"-"`
 
-	IsConnectedWithFacebook bool   `bson:"is_fb" json:"is_fb"`
-	FacebookAccessToken     string `bson:"fb_token" json:"fb_token"`
-
-	IsConnectedWithGooglePlus bool `bson:"is_gplus" json:"is_gplus"`
-
-	LastLatitude  float64 `bson:"last_lat" json:"-"`
-	LastLongitude float64 `bson:"last_lng" json:"-"`
+	IsConnectedWithFacebook   bool   `bson:"is_fb" json:"is_fb"`
+	FacebookAccessToken       string `bson:"fb_token" json:"fb_token"`
+	IsConnectedWithGooglePlus bool   `bson:"is_gplus" json:"is_gplus"`
 
 	CreatedAt time.Time `bson:"created_at" json:"created_at"`
 	UpdatedAt time.Time `bson:"updated_at" json:"updated_at"`

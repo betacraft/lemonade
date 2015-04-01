@@ -61,11 +61,15 @@
         $routeProvider.
             when('/', {
                 templateUrl: 'public/partials/landing.html',
-                controller: 'landingPageController'
+                controller: 'LandingPageController'
             }).
             when('/sign-up', {
                 templateUrl: 'public/partials/signUp.html',
-                controller: 'signUpPageController'
+                controller: 'SignUpPageController'
+            }).
+            when('/dashboard', {
+                templateUrl: 'public/partials/dashboard.html',
+                controller: 'DashboardPageController'
             }).
             otherwise({
                 redirectTo: '/'
@@ -76,17 +80,23 @@
     }]);
 
 
-    app.controller('landingPageController', function ($scope, $http, $location, $window) {
+    app.controller('LandingPageController', function ($scope, $http, $location, $window) {
         $scope.signUp = function () {
             $location.path("/sign-up");
         };
     });
 
-    app.controller('signUpPageController', function ($scope, $http, $routeParams, $window) {
+    app.controller('DashboardPageController', function ($scope, $http, $location, $window) {
+        $scope.signUp = function () {
+            $location.path("/sign-up");
+        };
+    });
+
+    app.controller('SignUpPageController', function ($scope, $http, $routeParams, $window) {
         $scope.signUpStatus = {};
         $scope.signUpStatus.is_tried = false;
         $scope.signUpStatus.is_success = false;
-        $scope.user = {};
+        $scope.user = {address:{city:"Pune"}};
 
         $scope.goToLogin = function () {
             $window.location.href = '/login';
