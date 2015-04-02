@@ -1,4 +1,47 @@
-<div class="container-fluid" ng-controller="SignUpPageController as ctrl" style="padding-top: 20px;">
+<script>
+    // Include the UserVoice JavaScript SDK (only needed once on a page)
+    UserVoice=window.UserVoice||[];(function(){var uv=document.createElement('script');uv.type='text/javascript';uv.async=true;uv.src='//widget.uservoice.com/f5oeTjQEmzbG51fJhjObxg.js';var s=document.getElementsByTagName('script')[0];s.parentNode.insertBefore(uv,s)})();
+
+    //
+    // UserVoice Javascript SDK developer documentation:
+    // https://www.uservoice.com/o/javascript-sdk
+    //
+
+    // Set colors
+    UserVoice.push(['set', {
+        accent_color: '#e8277a',
+        trigger_color: 'white',
+        trigger_background_color: '#e8277a'
+    }]);
+
+    // Identify the user and pass traits
+    // To enable, replace sample data with actual user traits and uncomment the line
+    UserVoice.push(['identify', {
+        //email:      'john.doe@example.com', // User’s email address
+        //name:       'John Doe', // User’s real name
+        //created_at: 1364406966, // Unix timestamp for the date the user signed up
+        //id:         123, // Optional: Unique id of the user (if set, this should not change)
+        //type:       'Owner', // Optional: segment your users by type
+        //account: {
+        //  id:           123, // Optional: associate multiple users with a single account
+        //  name:         'Acme, Co.', // Account name
+        //  created_at:   1364406966, // Unix timestamp for the date the account was created
+        //  monthly_rate: 9.99, // Decimal; monthly rate of the account
+        //  ltv:          1495.00, // Decimal; lifetime value of the account
+        //  plan:         'Enhanced' // Plan name for the account
+        //}
+    }]);
+
+    // Add default trigger to the bottom-right corner of the window:
+    UserVoice.push(['addTrigger', { mode: 'contact', trigger_position: 'bottom-right' }]);
+
+    // Or, use your own custom trigger:
+    //UserVoice.push(['addTrigger', '#id', { mode: 'contact' }]);
+
+    // Autoprompt for Satisfaction and SmartVote (only displayed under certain conditions)
+    UserVoice.push(['autoprompt', {}]);
+</script>
+<div class="container-fluid" ng-controller="SignUpPageController as ctrl" style="padding-top: 20px;padding-bottom: 50px;">
     <div class="modal fade" id="infoModal" tabindex="-1" role="dialog" aria-labelledby="infoModalLabel"
          aria-hidden="true">
         <div class="modal-dialog">
@@ -31,7 +74,7 @@
                         just a tweet/a phone call/an email away from you :). We take 100% responsibility of every bit of
                         content on the site.</p>
 
-                    <p>Again I would like to say <strong>thank you for helping us out</strong>.</p>
+                    <p>We are thrilled and really happy to take you aboard. <strong>Thank you for helping us out</strong>.</p>
                 </div>
                 <div class="modal-footer">
                     <p>With <span style="color:#e8277a; "><3</span> from Lemonades Team</p>
@@ -41,12 +84,13 @@
     </div>
     <div class="container">
         <div class="col-md-6 col-md-offset-3">
+            <img src="/public/img/H_logo.png" height="80px;" style="display: block;
+    margin-top: 30px;
+    margin-left: auto;
+    margin-right: auto;"/>
             <h2 class="text-center" style="color: #e8277a;">Sign Up for Beta Program</h2>
-
-            <h5 class="text-center"><a data-toggle="modal" data-target="#infoModal">Click here</a> for understanding
-                more about the beta program.</h5>
             <hr>
-            <form role="form" id="singUpForm" style="margin-top: 20px; margin-bottom: 50px;" novalidate>
+            <form role="form" id="singUpForm" style="margin-top: 20px;" novalidate>
                 <div class="form-group">
                     <label for="yourName">Your Name</label>
                     <input type="text" style="font-size: 16px;" class="form-control" id="yourName"
@@ -109,14 +153,18 @@
 
                 <div class="text-center">
                     <button type="submit" id="signUpButton" data-loading-text="Signing up..."
-                            class="btn btn-lg btn-primary"
+                            class="btn btn-lg btn-primary-border"
                             ng-click="signup()">Register
                     </button>
-                    <p style="margin-top: 10px;">By clicking on register you agree with <br><a>Privacy Policy</a><br> and <br><a>Terms and
-                        Conditions</a></p>
-
                 </div>
             </form>
+        </div>
+        <div class="col-md-12 text-center" style="margin-top: 30px;">
+
+            <h5 class="text-center"><a data-toggle="modal" data-target="#infoModal">Click here</a> for understanding
+                more about the beta program.</h5>
+            <p style="">By clicking on register you agree with <a>Privacy Policy</a> and <a>Terms and
+                Conditions</a></p>
 
         </div>
     </div>

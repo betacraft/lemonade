@@ -67,6 +67,10 @@
                 templateUrl: 'public/partials/signUp.html',
                 controller: 'SignUpPageController'
             }).
+            when('/login', {
+                templateUrl: 'public/partials/login.html',
+                controller: 'LoginPageController'
+            }).
             when('/dashboard', {
                 templateUrl: 'public/partials/dashboard.html',
                 controller: 'DashboardPageController'
@@ -84,12 +88,16 @@
         $scope.signUp = function () {
             $location.path("/sign-up");
         };
+        $scope.login = function () {
+            $location.path("/login");
+        };
+    });
+
+    app.controller('LoginPageController', function ($scope, $http, $location, $window) {
     });
 
     app.controller('DashboardPageController', function ($scope, $http, $location, $window) {
-        $scope.signUp = function () {
-            $location.path("/sign-up");
-        };
+
     });
 
     app.controller('SignUpPageController', function ($scope, $http, $routeParams, $window) {

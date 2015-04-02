@@ -18,8 +18,8 @@
     // Set colors
     UserVoice.push(['set', {
         accent_color: '#e8277a',
-        trigger_color: '#e8277a',
-        trigger_background_color: '#fee33d'
+        trigger_color: 'white',
+        trigger_background_color: '#e8277a'
     }]);
 
     // Identify the user and pass traits
@@ -49,32 +49,39 @@
     // Autoprompt for Satisfaction and SmartVote (only displayed under certain conditions)
     UserVoice.push(['autoprompt', {}]);
 </script>
-<div class="container-fluid" ng-controller="LandingPageController as ctrl" style="background-color: #e8277a;">
-    <div class="col-md-12 text-right" style="margin-top: 20px;margin-right: 20px;">
-        <a href="" class="btn btn btn-primary-yellow" ng-click="login()">Member Login</a>
-    </div>
-    <img src="/public/img/logo.png" style="display: block;
-    width: 40%;
+<div class="container-fluid" ng-controller="LoginPageController as ctrl"
+     style="padding-top: 20px;padding-bottom: 50px;">
+    <div class="container">
+        <div class="col-md-6 col-md-offset-3">
+            <img src="/public/img/H_logo.png" height="80px;" style="display: block;
     margin-top: 30px;
     margin-left: auto;
     margin-right: auto;"/>
 
-    <h1 class="text-center" style="color:#fee33d; margin-top: -10px;">Next Generation Of Group Buying</h1>
+            <h2 class="text-center" style="color: #e8277a;">Login</h2>
+            <hr>
+            <form role="form" id="loginForm" style="margin-top: 20px;" novalidate>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="text" style="font-size: 16px;" class="form-control" id="email"
+                           placeholder="anthony@gonzalvis.com"
+                           ng-model="user.email" ng-required>
+                </div>
 
-    <div class="col-md-12 text-center" style="margin-bottom: 100px;margin-top: 40px;">
-        <a href="" class="btn btn-lg btn-primary-yellow" ng-click="signUp()">Become Beta User</a>
-    </div>
-    <h1 class="text-center" style="color:#fee33d; ">How it works ?</h1>
-    <div class="col-md-12" style="margin-bottom: 50px;">
-        <img src="/public/img/flow.png" style="display: block;
-    width: 80%;
-    margin-top: 30px;
-    margin-left: auto;
-    margin-right: auto;"/>
-    </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" style="font-size: 16px;" class="form-control" id="password"
+                           placeholder="shhhhhhhh"
+                           ng-model="user.password" ng-required>
+                </div>
 
-    <div class="col-md-12 text-center" style="margin-bottom: 100px;margin-top: 40px;">
-        <a href="" class="btn btn-lg btn-primary-yellow" ng-click="signUp()">Become Beta User</a>
+                <div class="text-center">
+                    <button type="submit" id="signUpButton" data-loading-text="Logging in..."
+                            class="btn btn btn-primary-border"
+                            ng-click="login()">Login
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
-
