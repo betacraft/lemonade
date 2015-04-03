@@ -1,0 +1,147 @@
+<div id="fb-root"></div>
+<script>(function (d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) return;
+    js = d.createElement(s);
+    js.id = id;
+    js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&appId=311407208924605&version=v2.3";
+    fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+<script>
+    // Include the UserVoice JavaScript SDK (only needed once on a page)
+    UserVoice = window.UserVoice || [];
+    (function () {
+        var uv = document.createElement('script');
+        uv.type = 'text/javascript';
+        uv.async = true;
+        uv.src = '//widget.uservoice.com/f5oeTjQEmzbG51fJhjObxg.js';
+        var s = document.getElementsByTagName('script')[0];
+        s.parentNode.insertBefore(uv, s)
+    })();
+
+    //
+    // UserVoice Javascript SDK developer documentation:
+    // https://www.uservoice.com/o/javascript-sdk
+    //
+
+    // Set colors
+    UserVoice.push(['set', {
+        accent_color: '#e8277a',
+        trigger_color: '#FFFFFF',
+        trigger_background_color: '#e8277a'
+    }]);
+
+    // Identify the user and pass traits
+    // To enable, replace sample data with actual user traits and uncomment the line
+    UserVoice.push(['identify', {
+        //email:      'john.doe@example.com', // User’s email address
+        //name:       'John Doe', // User’s real name
+        //created_at: 1364406966, // Unix timestamp for the date the user signed up
+        //id:         123, // Optional: Unique id of the user (if set, this should not change)
+        //type:       'Owner', // Optional: segment your users by type
+        //account: {
+        //  id:           123, // Optional: associate multiple users with a single account
+        //  name:         'Acme, Co.', // Account name
+        //  created_at:   1364406966, // Unix timestamp for the date the account was created
+        //  monthly_rate: 9.99, // Decimal; monthly rate of the account
+        //  ltv:          1495.00, // Decimal; lifetime value of the account
+        //  plan:         'Enhanced' // Plan name for the account
+        //}
+    }]);
+
+    // Add default trigger to the bottom-right corner of the window:
+    UserVoice.push(['addTrigger', {mode: 'contact', trigger_position: 'bottom-right'}]);
+
+    // Or, use your own custom trigger:
+    //UserVoice.push(['addTrigger', '#id', { mode: 'contact' }]);
+
+    // Autoprompt for Satisfaction and SmartVote (only displayed under certain conditions)
+    UserVoice.push(['autoprompt', {}]);
+</script>
+<div class="container-fluid" ng-controller="LandingPageController as ctrl"
+     style="background-color: #e8277a;padding-bottom: 50px;">
+    <div class="row">
+        <div class="col-md-6">
+            <img src="/public/img/logo.png" style="display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 60%;margin-top: 100px;"/>
+
+            <h1 class="text-center" style="color:#fee33d;margin-left: 20px; margin-top: -10px;">Next Generation Of Group
+                Buying</h1>
+
+        </div>
+        <div class="col-md-6" style="margin-top: 70px;">
+            <div class="panel panel-default">
+                <div class="panel-title text-center"><h1 style="color:#e8277a; ">Thank you for registering.</h1></div>
+                <div class="panel-body">
+                    <div class="row" style="border-top: 1px solid #ecf0f1; padding-top: 20px;padding-bottom: 20px;">
+                        <div class="col-md-12">
+                            <p>We have been notified about your sign-up request. <span style="font-weight: bold;">One of our representative will call you back
+                                within 30 minutes</span> (or else you can fire an email if you don't receive a call from us @
+                                akshay@rainingclouds.com).</p>
+                            Working hours are 10 AM to 8 PM (All Days)
+                        </div>
+                    </div>
+
+
+                    <div class="row" style="border-top: 1px solid #ecf0f1;"></div>
+                    <div class="row" style="margin-top: 10px;">
+                        <div class="col-md-12 text-center" style="margin-bottom: 20px;">
+                            Till then you can spread the <span style="color:#e8277a; "><3</span>
+                        </div>
+                        <div class="col-md-5">
+                            <div class="fb-like" data-href="https://developers.facebook.com/docs/plugins/"
+                                 data-width="100"
+                                 data-layout="standard" data-action="recommend" data-show-faces="true"
+                                 data-share="true"></div>
+                        </div>
+                        <div class="col-md-3">
+                            <a href="https://twitter.com/share" class="twitter-share-button" data-size="large">Tweet</a>
+                            <script>!function (d, s, id) {
+                                var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https';
+                                if (!d.getElementById(id)) {
+                                    js = d.createElement(s);
+                                    js.id = id;
+                                    js.src = p + '://platform.twitter.com/widgets.js';
+                                    fjs.parentNode.insertBefore(js, fjs);
+                                }
+                            }(document, 'script', 'twitter-wjs');</script>
+                        </div>
+                        <div class="col-md-4">
+                            <!-- Place this tag where you want the share button to render. -->
+                            <div class="g-plus" data-action="share" data-height="24"></div>
+
+                            <!-- Place this tag after the last share tag. -->
+                            <script type="text/javascript">
+                                (function () {
+                                    var po = document.createElement('script');
+                                    po.type = 'text/javascript';
+                                    po.async = true;
+                                    po.src = 'https://apis.google.com/js/platform.js';
+                                    var s = document.getElementsByTagName('script')[0];
+                                    s.parentNode.insertBefore(po, s);
+                                })();
+                            </script>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container-fluid">
+    <div class="row">
+        <h1 class="text-center" style="color:#e8277a; ">How it works ?</h1>
+
+        <div class="col-md-12" style="margin-bottom: 50px;">
+            <img src="/public/img/flow_white.png" style="display: block;
+    width: 50%;
+    margin-top: 30px;
+    margin-left: auto;
+    margin-right: auto;"/>
+        </div>
+
+    </div>
+</div>

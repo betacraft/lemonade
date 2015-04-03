@@ -1,5 +1,11 @@
 (function () {
-    var app = angular.module('lemonade', ['ngRoute']);
+    var app = angular.module('lemonade', ['ngRoute','ipCookie', 'ngAnimate']);
+    var baseUrl;
+    if (window.location.port != ""){
+        baseUrl = location.protocol + "//"+ window.location.hostname + ":"+ window.location.port + "/api/v1"
+    }else{
+        baseUrl = location.protocol + "//"+ window.location.hostname + "/api/v1"
+    }
     app.run(function ($rootScope) {
         $rootScope.loading = false;
         $rootScope.httpCount = 0;
@@ -71,6 +77,14 @@
                 templateUrl: 'public/partials/login.html',
                 controller: 'LoginPageController'
             }).
+            when('/share', {
+                templateUrl: 'public/partials/share.html',
+                controller: 'SharePageController'
+            }).
+            when('/sign-up/success', {
+                templateUrl: 'public/partials/signUpSuccess.html',
+                controller: 'SignUpSuccessPageController'
+            }).
             when('/dashboard', {
                 templateUrl: 'public/partials/dashboard.html',
                 controller: 'DashboardPageController'
@@ -100,30 +114,41 @@
 
     });
 
-    app.controller('SignUpPageController', function ($scope, $http, $routeParams, $window) {
-        $scope.signUpStatus = {};
-        $scope.signUpStatus.is_tried = false;
-        $scope.signUpStatus.is_success = false;
-        $scope.user = {address:{city:"Pune"}};
+    app.controller('SharePageController', function ($scope, $http, $location, $window) {
 
-        $scope.goToLogin = function () {
-            $window.location.href = '/login';
+    });
+
+    app.controller('SignUpSuccessPageController', function ($scope, $http, $location, $window) {
+
+    });
+
+    app.controller('SignUpPageController', function ($scope, $http, $routeParams, $window,$location) {
+        $scope.signUpStatus = {};
+        $scope.user = {city:"Pune"};
+
+        $scope.goToDashboard = function () {
+            $window.location.href = '/';
         };
 
-        $scope.signup = function () {
+        $scope.signUp = function () {
+            var btn = $('#signUpButton').button('loading');
             $scope.signUpStatus.is_tried = true;
-            $http.post(baseUrl + '/user/signup', $scope.user).success(function (data, status) {
+            $http.post(baseUrl + '/user', $scope.user).success(function (data, status) {
                 console.log(data);
+                btn.button('reset');
                 if (data.success) {
                     $scope.signUpStatus.is_success = true;
+                    $location.path("/sign-up/success");
                     return;
                 }
                 $scope.signUpStatus.message = data.message;
                 $scope.signUpStatus.is_success = false;
+
             }).error(function (data, status) {
                 console.log(data);
                 $scope.signUpStatus.message = data.message;
                 $scope.signUpStatus.is_success = false;
+                btn.button('reset');
             });
         };
     });

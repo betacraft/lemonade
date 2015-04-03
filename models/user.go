@@ -50,9 +50,14 @@ type User struct {
 
 	OtpCode string `bson:"otp_code" json:"-"`
 
+	Address Address `bson:"address" json:"address"`
+
 	IsConnectedWithFacebook   bool   `bson:"is_fb" json:"is_fb"`
 	FacebookAccessToken       string `bson:"fb_token" json:"fb_token"`
 	IsConnectedWithGooglePlus bool   `bson:"is_gplus" json:"is_gplus"`
+
+	IsAccessEnabled bool   `bson:"is_access_enabled" json:"is_access_enabled"`
+	Reason          string `bson:"reason" json:"reason"`
 
 	CreatedAt time.Time `bson:"created_at" json:"created_at"`
 	UpdatedAt time.Time `bson:"updated_at" json:"updated_at"`
@@ -95,6 +100,31 @@ func CreateUser(userMap map[string]interface{}) (*User, error) {
 	user.Password, ok = userMap["password"].(string)
 	if !ok {
 		return nil, errors.New("Password is not present")
+	}
+	user.CurrentMobileHandset, ok = userMap["current_handset"].(string)
+	if !ok {
+		return nil, errors.New("Current Handset is not present")
+	}
+	user.LookingForHandset, ok = userMap["looking_for_handset"].(string)
+	if !ok {
+		return nil, errors.New("Looking for Handset is not present")
+	}
+	user.Address = Address{}
+	user.Address.City, ok = userMap["city"].(string)
+	if !ok {
+		return nil, errors.New("City is not present")
+	}
+	user.Address.Locality, ok = userMap["locality"].(string)
+	if !ok {
+		return nil, errors.New("Locality is not present")
+	}
+	user.Address.Address, ok = userMap["address"].(string)
+	if !ok {
+		return nil, errors.New("Address is not present")
+	}
+	user.Address.ZipCode, ok = userMap["zip_code"].(string)
+	if !ok {
+		return nil, errors.New("Zip Code is not present")
 	}
 	return user, nil
 }
