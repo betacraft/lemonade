@@ -175,6 +175,10 @@
             $location.path("/sign-up");
         };
 
+        $scope.goToDashboard = function () {
+            $window.location.href = '/';
+        };
+
         $scope.init = function(){
             $window.scrollTo(0,0);
             $http.get(baseUrl + '/deal/' + $scope.dealId).success(function (data, status) {
