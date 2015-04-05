@@ -1,24 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="0ee374f5-774f-4a51-8843-d7845761e82e" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/public/js/app.js" afterPath="$PROJECT_DIR$/public/js/app.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/interceptors/authenticator.go" afterPath="$PROJECT_DIR$/interceptors/authenticator.go" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/models/collections.go" afterPath="$PROJECT_DIR$/models/collections.go" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/public/partials/dashboard.html" afterPath="$PROJECT_DIR$/public/partials/dashboard.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/scripts/install_dependencies.sh" afterPath="$PROJECT_DIR$/scripts/install_dependencies.sh" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/kernel.go" afterPath="$PROJECT_DIR$/kernel.go" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/public/partials/landing.html" afterPath="$PROJECT_DIR$/public/partials/landing.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/public/partials/login.html" afterPath="$PROJECT_DIR$/public/partials/login.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/db/mongo.go" afterPath="$PROJECT_DIR$/db/mongo.go" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/routes.go" afterPath="$PROJECT_DIR$/routes.go" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/public/partials/share.html" afterPath="$PROJECT_DIR$/public/partials/share.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/public/partials/signUpSuccess.html" afterPath="$PROJECT_DIR$/public/partials/signUpSuccess.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/scripts/test.sh" afterPath="$PROJECT_DIR$/scripts/test.sh" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/controllers/user.go" afterPath="$PROJECT_DIR$/controllers/user.go" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/models/user.go" afterPath="$PROJECT_DIR$/models/user.go" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-    </list>
+    <list default="true" id="0ee374f5-774f-4a51-8843-d7845761e82e" name="Default" comment="" />
     <ignored path="lemonade.iws" />
     <ignored path=".idea/workspace.xml" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -44,8 +27,8 @@
       <file leaf-file-name="app.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/public/js/app.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.6540284" vertical-offset="4002" max-vertical-offset="5336">
-              <caret line="192" column="10" selection-start-line="192" selection-start-column="10" selection-end-line="192" selection-end-column="10" />
+            <state vertical-scroll-proportion="0.36334914" vertical-offset="0" max-vertical-offset="5336">
+              <caret line="10" column="33" selection-start-line="10" selection-start-column="33" selection-end-line="10" selection-end-column="33" />
               <folding />
             </state>
           </provider>
@@ -696,8 +679,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/public/js/app.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.6540284" vertical-offset="4002" max-vertical-offset="5336">
-          <caret line="192" column="10" selection-start-line="192" selection-start-column="10" selection-end-line="192" selection-end-column="10" />
+        <state vertical-scroll-proportion="0.36334914" vertical-offset="0" max-vertical-offset="5336">
+          <caret line="10" column="33" selection-start-line="10" selection-start-column="33" selection-end-line="10" selection-end-column="33" />
           <folding />
         </state>
       </provider>

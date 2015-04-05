@@ -1,0 +1,40 @@
+{
+	"ImportPath": "github.com/rainingclouds/lemonade",
+	"GoVersion": "go1.4",
+	"Deps": [
+		{
+			"ImportPath": "github.com/Sirupsen/logrus",
+			"Comment": "v0.7.2-2-ge00ed35",
+			"Rev": "e00ed35f54d331c88f1867a18a7bfc4e4e4685ac"
+		},
+		{
+			"ImportPath": "github.com/getsentry/raven-go",
+			"Rev": "86cd4063c535cbbcbf43d84424dbd5911ab1b818"
+		},
+		{
+			"ImportPath": "github.com/go-zoo/bone",
+			"Rev": "bf0893da6ccb23623e95f00b1ce9c7a10fdb8508"
+		},
+		{
+			"ImportPath": "github.com/jordan-wright/email",
+			"Rev": "9c459b245c20bee2cc7adbd1e27e4e716f98ad88"
+		},
+		{
+			"ImportPath": "github.com/mholt/binding",
+			"Rev": "6c082304f300fc70793cb0be18af0fdd4acd2b75"
+		},
+		{
+			"ImportPath": "github.com/nu7hatch/gouuid",
+			"Rev": "179d4d0c4d8d407a32af483c2354df1d2c91e6c3"
+		},
+		{
+			"ImportPath": "github.com/rcrowley/go-metrics",
+			"Rev": "dee209f2455f101a5e4e593dea94872d2c62d85d"
+		},
+		{
+			"ImportPath": "gopkg.in/mgo.v2",
+			"Comment": "r2015.01.24",
+			"Rev": "c6a7dce14133ccac2dcac3793f1d6e2ef048503a"
+		}
+	]
+}
