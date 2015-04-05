@@ -176,6 +176,7 @@
         };
 
         $scope.init = function(){
+            $window.scrollTo(0,0);
             $http.get(baseUrl + '/deal/' + $scope.dealId).success(function (data, status) {
                 console.log(data);
                 if (data.success) {
@@ -188,6 +189,9 @@
     });
 
     app.controller('SignUpSuccessPageController', function ($scope, $http, $location, $window) {
+        $scope.init=function(){
+            $window.scrollTo(0,0);
+        };
         $scope.goToDashboard = function () {
             $window.location.href = '/';
         };
@@ -196,6 +200,10 @@
     app.controller('SignUpPageController', function ($scope, $http, $routeParams, $window, $location) {
         $scope.signUpStatus = {};
         $scope.user = {city: "Pune"};
+
+        $scope.init = function(){
+            $window.scrollTo(0,0);
+        };
 
         $scope.goToDashboard = function () {
             $window.location.href = '/';

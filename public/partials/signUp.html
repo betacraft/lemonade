@@ -49,7 +49,7 @@
     // Autoprompt for Satisfaction and SmartVote (only displayed under certain conditions)
     UserVoice.push(['autoprompt', {}]);
 </script>
-<div class="container-fluid" ng-controller="SignUpPageController as ctrl"
+<div class="container-fluid" ng-controller="SignUpPageController as ctrl" ng-init="init()"
      style="padding-top: 20px;padding-bottom: 50px;">
     <div class="modal fade" id="infoModal" tabindex="-1" role="dialog" aria-labelledby="infoModalLabel"
          aria-hidden="true">
