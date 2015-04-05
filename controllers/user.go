@@ -2,9 +2,14 @@ package controllers
 
 import (
 	"errors"
+	"fmt"
+	"github.com/go-zoo/bone"
+	"github.com/jordan-wright/email"
 	"github.com/rainingclouds/lemonade/framework"
 	"github.com/rainingclouds/lemonade/logger"
+	"github.com/rainingclouds/lemonade/mailer"
 	"github.com/rainingclouds/lemonade/models"
+	"gopkg.in/mgo.v2/bson"
 	"net/http"
 )
 
@@ -29,6 +34,15 @@ func RegisterUser(w http.ResponseWriter, r *http.Request) {
 		framework.WriteError(w, r, http.StatusBadRequest, err)
 		return
 	}
+	// notifying to the admins
+	go func(user *models.User) {
+		u := models.GetUserByAuthKey(user.AuthKey)
+		mail := email.NewEmail()
+		mail.From = "lemonades@rainingclouds.com"
+		mail.Subject = fmt.Sprintf("%v requested access to lemonades", u.Name)
+		mail.Text = []byte(fmt.Sprintf("%v is registered, please call him and update the status to akshay@rainingclouds.com", u))
+		mailer.SendToMany([]string{"amit@rainingclouds.com", "akshay@rainingclouds.com"}, mail)
+	}(user)
 	// send otp
 	// go user.SendOtp()
 	framework.WriteResponse(w, http.StatusOK, framework.JSONResponse{"success": true,
@@ -198,6 +212,60 @@ func AuthenticateUser(w http.ResponseWriter, r *http.Request) {
 			"user":    user,
 			"message": "User is successfully authenticated",
 		})
+}
+
+func UserLogout(w http.ResponseWriter, r *framework.Request) {
+	user := r.MustGet("user").(*models.User)
+	user.SessionKey = ""
+	err := user.Save()
+	if err != nil {
+		framework.WriteError(w, r.Request, http.StatusInternalServerError, err)
+		return
+	}
+	framework.WriteResponse(w, http.StatusOK, framework.JSONResponse{
+		"success": true,
+		"message": "User is successfully logged out",
+	})
+}
+
+func AttachDeal(w http.ResponseWriter, r *framework.Request) {
+	authKey := r.Request.Header.Get("User-Auth-Key")
+	if authKey == "" {
+		framework.WriteError(w, r.Request, http.StatusBadRequest, errors.New("Illegal request"))
+		return
+	}
+	user, err := models.GetUserByAuthKey(authKey)
+	if err != nil {
+		framework.WriteError(w, r.Request, http.StatusBadRequest, err)
+		return
+	}
+	dealIdHex := bone.GetValue(r.Request, "deal_id")
+	dealId := bson.ObjectIdHex(dealIdHex)
+	if !dealId.Valid() {
+		framework.WriteError(w, r.Request, http.StatusBadRequest, errors.New("Illegal request"))
+		return
+	}
+	deal, err := models.GetPhoneDealById(dealId)
+	if err != nil {
+		framework.WriteError(w, r.Request, http.StatusBadRequest, err)
+		return
+	}
+	user.DealId = dealId
+	deal.CurrentPeopleCount = deal.CurrentPeopleCount + 1
+	err = deal.Save()
+	if err != nil {
+		framework.WriteError(w, r.Request, http.StatusInternalServerError, err)
+		return
+	}
+	err = user.Save()
+	if err != nil {
+		framework.WriteError(w, r.Request, http.StatusInternalServerError, err)
+		return
+	}
+	framework.WriteResponse(w, http.StatusOK, framework.JSONResponse{
+		"success": true,
+		"message": "User is attached to the deal",
+	})
 }
 
 func GetUser(w http.ResponseWriter, r *framework.Request) {

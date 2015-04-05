@@ -16,8 +16,14 @@ func pushRoutes(mux *bone.Mux) {
 	// admin apis
 	mux.Post("/api/v1/admin", http.HandlerFunc(controllers.RegisterAdmin))
 	mux.Post("/api/v1/admin/login", http.HandlerFunc(controllers.AuthenticateAdmin))
+	// deals apis
+	mux.Post("/api/v1/deals/create", interceptors.AdminAuthenticate(controllers.CreateDeal))
 	// user apis
+	mux.Get("/api/v1/user/deals", interceptors.UserAuthenticate(controllers.GetDealsForUser))
+	mux.Get("/api/v1/deal/:id", http.HandlerFunc(controllers.GetDeal))
 	mux.Post("/api/v1/user", http.HandlerFunc(controllers.RegisterUser))
 	mux.Get("/api/v1/user", interceptors.UserAuthenticate(controllers.GetUser))
+	mux.Post("/api/v1/user/subscribe/:deal_id", interceptors.AdminAuthenticate(controllers.AttachDeal))
 	mux.Post("/api/v1/user/login", http.HandlerFunc(controllers.AuthenticateUser))
+	mux.Post("/api/v1/user/logout", interceptors.UserAuthenticate(controllers.UserLogout))
 }

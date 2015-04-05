@@ -6,6 +6,7 @@ import (
 	"github.com/rainingclouds/lemonade/framework"
 	"github.com/rainingclouds/lemonade/interceptors"
 	"github.com/rainingclouds/lemonade/logger"
+	"github.com/rainingclouds/lemonade/mailer"
 	"net/http"
 	"os"
 )
@@ -32,6 +33,7 @@ func main() {
 	}
 	logger.Debug("Initializing mongo : Done")
 	defer db.CloseMongo()
+	mailer.Init()
 	// initializing routes
 	logger.Debug("Initializing routes")
 	mux := bone.New()

@@ -27,8 +27,8 @@
     // Set colors
     UserVoice.push(['set', {
         accent_color: '#e8277a',
-        trigger_color: '#e8277a',
-        trigger_background_color: '#fee33d'
+        trigger_color: '#FFFFFF',
+        trigger_background_color: '#e8277a'
     }]);
 
     // Identify the user and pass traits
@@ -58,9 +58,10 @@
     // Autoprompt for Satisfaction and SmartVote (only displayed under certain conditions)
     UserVoice.push(['autoprompt', {}]);
 </script>
-<div class="container-fluid" ng-controller="LandingPageController as ctrl" style="background-color: #e8277a;">
+<div class="container-fluid" ng-controller="SharePageController as ctrl" style="background-color: #e8277a;"
+     ng-init="init()">
     <div class="row">
-        <div class="col-md-6" >
+        <div class="col-md-6">
             <img src="/public/img/logo.png" style="display: block;
     margin-left: auto;
     margin-right: auto;
@@ -70,48 +71,49 @@
                 Buying</h1>
 
             <div class="col-md-12 text-center" style="margin-bottom: 100px;margin-top: 40px;">
-                <a href="" class="btn btn-lg btn-primary-yellow" ng-click="signUp()">Register</a>
+                <a href="" class="btn btn-lg btn-primary-yellow" ng-click="goToRegister()">Register To Buy</a>
             </div>
         </div>
-        <div class="col-md-6" style="margin-top: 70px;">
+        <div class="col-md-6" style="margin-top: 70px;" ng-show="deal.id">
             <div class="panel panel-default">
-                <div class="panel-title text-center"><h1 style="color:#e8277a; ">Buy Google Nexus 6</h1></div>
+                <div class="panel-title text-center"><h1 style="color:#e8277a; ">Buy {{deal.name}} in Group</h1></div>
                 <div class="panel-body">
                     <div class="col-md-12" style="margin-bottom: 10px;"></div>
                     <div class="col-md-4">
-                        <img width="80%;"
+                        <img width="100%;"
                              style="margin-left: auto; margin-right: auto;"
-                             src="http://cdn1.xda-developers.com/devdb/deviceForum/screenshots/3706/20141020T045645.jpg">
+                             src="{{deal.image_link}}">
                     </div>
-                    <div class="col-md-8"><div class="row">
-                        <div class="col-md-4"><strong>Screen Size</strong></div>
-                        <div class="col-md-8">6 inch</div>
-                    </div>
+                    <div class="col-md-8">
+                        <div class="row">
+                            <div class="col-md-4"><strong>Screen Size</strong></div>
+                            <div class="col-md-8">{{deal.screen_size}}</div>
+                        </div>
                         <div class="row">
                             <div class="col-md-4"><strong>CPU</strong></div>
-                            <div class="col-md-8">Quad-core 2.7 GHz</div>
+                            <div class="col-md-8">{{deal.cpu}}</div>
                         </div>
                         <div class="row">
                             <div class="col-md-4"><strong>GPU</strong></div>
-                            <div class="col-md-8">Adreno 420</div>
+                            <div class="col-md-8">{{deal.gpu}}</div>
                         </div>
                         <div class="row">
                             <div class="col-md-4"><strong>Memory</strong></div>
-                            <div class="col-md-8">32/64 GB, 3 GB RAM</div>
+                            <div class="col-md-8">{{deal.memory}}</div>
                         </div>
                         <div class="row">
                             <div class="col-md-4"><strong>Camera</strong></div>
-                            <div class="col-md-8">13 MP</div>
+                            <div class="col-md-8">{{deal.camera}}</div>
                         </div>
                         <div class="row">
                             <div class="col-md-4"><strong>OS</strong></div>
-                            <div class="col-md-8">Android OS, v5.0 (Lollipop), upgradable to v5.1 (Lollipop)</div>
+                            <div class="col-md-8">{{deal.os}}</div>
                         </div>
                         <div class="row" style="margin-bottom: 20px;">
                             <div class="col-md-4"><strong>Battery</strong></div>
-                            <div class="col-md-8">Non-removable Li-Po 3220 mAh battery</div>
+                            <div class="col-md-8">{{deal.battery}}</div>
                         </div>
-                        <a style="" href="http://www.gsmarena.com/motorola_nexus_6-6604.php" target="_blank">View Full
+                        <a style="" href="{{deal.full_specification_link}}" target="_blank">View Full
                             Specs
                             Here</a></div>
                     <div class="row" style="border-top: 1px solid #ecf0f1;"></div>
@@ -119,33 +121,28 @@
                         <div class="col-md-4 text-center">
                             <span>MRP (Rs)</span>
 
-                            <h1 style="color:#e8277a;">44,123</h1>
+                            <h3 style="color:#e8277a;">{{deal.mrp}}</h3>
                         </div>
                         <div class="col-md-4 text-center">
                             <span>Current Discount</span>
 
-                            <h1 style="color:#e8277a;">10% Off</h1>
+                            <h1 style="color:#e8277a;">{{deal.current_discount}}</h1>
                         </div>
                         <div class="col-md-4 text-center">
-                            <span>Closing In</span>
+                            <span>Closing On</span>
 
-                            <h1 style="color:#e8277a;">1 Day(s)</h1>
+                            <h1 style="color:#e8277a;">{{deal.closing_on | date :'dd-MMM'}}</h1>
                         </div>
                         <div class="col-md-4 text-center">
                             <span>Current People Count</span>
 
-                            <h1 style="color:#e8277a;">43</h1>
+                            <h1 style="color:#e8277a;">{{deal.current_people_count}}</h1>
                         </div>
                         <div class="col-md-4 text-center">
                             <span>Next Discount</span>
 
-                            <h1 style="color:#e8277a;">12%</h1>
-                            <span>For 50 People</span>
-                        </div>
-                        <div class="col-md-4 text-center">
-                            <span>Seller Area</span>
-
-                            <h1 style="color:#e8277a;">Baner</h1>
+                            <h1 style="color:#e8277a;">{{deal.next_discount}}</h1>
+                            <span>For {{deal.next_discount_for}} People</span>
                         </div>
                     </div>
                     <div class="row" style="border-top: 1px solid #ecf0f1;"></div>
@@ -153,13 +150,13 @@
                         <div class="col-md-12 text-center" style="margin-bottom: 20px;">
                             More you share, More the discount !
                         </div>
-                        <div class="col-md-5">
-                            <div class="fb-like" data-href="https://developers.facebook.com/docs/plugins/" data-width="100"
-                                 data-layout="standard" data-action="recommend" data-show-faces="true"
-                                 data-share="true"></div>
+                        <div class="col-md-3 col-md-offset-1">
+                            <div class="fb-share-button" data-href="http://lemonades.in/#!/share/{{deal.id}}"
+                                 data-layout="button_count"></div>
                         </div>
                         <div class="col-md-3">
-                            <a href="https://twitter.com/share" class="twitter-share-button" data-size="large">Tweet</a>
+                            <a href="https://twitter.com/share" class="twitter-share-button"
+                               data-url="http://lemonades.in/#!/share/{{deal.id}}">Tweet</a>
                             <script>!function (d, s, id) {
                                 var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https';
                                 if (!d.getElementById(id)) {
@@ -172,7 +169,7 @@
                         </div>
                         <div class="col-md-4">
                             <!-- Place this tag where you want the share button to render. -->
-                            <div class="g-plus" data-action="share" data-height="24"></div>
+                            <div class="g-plus" data-action="share" data-height="24" data-href="http://lemonades.in/#!/share/{{deal.id}}"></div>
 
                             <!-- Place this tag after the last share tag. -->
                             <script type="text/javascript">
@@ -192,11 +189,14 @@
             </div>
         </div>
     </div>
+
+</div>
+<div class="container-fluid" ng-controller="SharePageController as ctrl" style="">
     <div class="row">
-        <h1 class="text-center" style="color:#fee33d; ">How it works ?</h1>
+        <h1 class="text-center" style="color:#e8277a; ">How it works ?</h1>
 
         <div class="col-md-12" style="margin-bottom: 50px;">
-            <img src="/public/img/flow.png" style="display: block;
+            <img src="/public/img/flow_white.png" style="display: block;
     width: 80%;
     margin-top: 30px;
     margin-left: auto;
@@ -204,7 +204,6 @@
         </div>
 
         <div class="col-md-12 text-center" style="margin-bottom: 100px;margin-top: 40px;">
-            <a href="" class="btn btn-lg btn-primary-yellow" ng-click="signUp()">Register</a>
+            <a href="" class="btn btn-lg btn-primary" ng-click="goToRegister()">Register To Buy</a>
         </div>
     </div>
-</div>

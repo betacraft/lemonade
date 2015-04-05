@@ -10,7 +10,7 @@ import (
 
 var mongoSession *mgo.Session
 
-var dbName = os.Getenv("RESSY_MG_DB_NAME")
+var dbName = os.Getenv("LEMN_MG_DB_NAME")
 
 // this initializes the db connection
 // this *MUST* be called at the start of the web app
@@ -18,7 +18,7 @@ var dbName = os.Getenv("RESSY_MG_DB_NAME")
 // starting the http handler
 func InitMongo() error {
 	var err error
-	mongoSession, err = mgo.Dial(os.Getenv("RESSY_MG_URI"))
+	mongoSession, err = mgo.Dial(os.Getenv("LEMN_MG_URI"))
 	if err != nil {
 		return err
 	}

@@ -35,8 +35,9 @@ func (a Address) FieldMap() binding.FieldMap {
 }
 
 type User struct {
-	Id      bson.ObjectId `bson:"_id,omitempty" json:"id"`
-	AuthKey string        `bson:"auth_key" json:"auth_key"`
+	Id         bson.ObjectId `bson:"_id,omitempty" json:"id"`
+	AuthKey    string        `bson:"auth_key" json:"auth_key"`
+	SessionKey string        `bson:"session_key" json:"session_key"`
 
 	Name              string `bson:"name" json:"name"`
 	MobileNumber      string `bson:"mobile_number" json:"mobile"`
@@ -58,6 +59,8 @@ type User struct {
 
 	IsAccessEnabled bool   `bson:"is_access_enabled" json:"is_access_enabled"`
 	Reason          string `bson:"reason" json:"reason"`
+
+	DealId bson.ObjectId `bson:"deal_id,omitempty" json:"deal_id"`
 
 	CreatedAt time.Time `bson:"created_at" json:"created_at"`
 	UpdatedAt time.Time `bson:"updated_at" json:"updated_at"`
@@ -126,6 +129,8 @@ func CreateUser(userMap map[string]interface{}) (*User, error) {
 	if !ok {
 		return nil, errors.New("Zip Code is not present")
 	}
+	user.IsConnectedWithGooglePlus = false
+	user.IsConnectedWithFacebook = false
 	return user, nil
 }
 
@@ -205,7 +210,7 @@ func (u *User) Create() error {
 	}
 	logger.Get().Debug(u.Password)
 	u.AuthKey = authKey.String()
-	if !u.IsConnectedWithGooglePlus && u.IsConnectedWithFacebook {
+	if !u.IsConnectedWithGooglePlus && !u.IsConnectedWithFacebook {
 		u.Password = framework.MD5Hash(u.Password)
 	}
 	u.CreatedAt = time.Now()
@@ -225,6 +230,12 @@ func GetUserByAuthKey(authKey string) (*User, error) {
 	return u, err
 }
 
+func GetUserBySessionKey(sessionKey string) (*User, error) {
+	u := new(User)
+	err := db.MgFindOneStrong(C_USERS, &bson.M{"session_key": sessionKey}, u)
+	return u, err
+}
+
 func (u *User) UpdatePassword(password string) error {
 	hashedPassword := framework.MD5Hash(password)
 	u.Password = hashedPassword
@@ -238,11 +249,17 @@ func (u *User) AuthenticateUser() error {
 	err := db.MgFindOneStrong(C_USERS, &bson.M{"email": u.Email, "password": hashedPassword}, u)
 	if err != nil {
 		logger.Get().Error(err)
-		return errors.New("User not found")
+		return errors.New("Wrong Email/Password")
 	}
 	logger.Get().Debug(u)
 	if u.Id != "" {
-		return nil
+		sessionKey, err := uuid.NewV4()
+		if err != nil {
+			logger.Get().Error(err)
+			return err
+		}
+		u.SessionKey = sessionKey.String()
+		return u.Save()
 	}
 	return errors.New("Password did not match")
 }

@@ -3,19 +3,26 @@ package interceptors
 import (
 	"errors"
 	"github.com/rainingclouds/lemonade/framework"
+	"github.com/rainingclouds/lemonade/logger"
 	"github.com/rainingclouds/lemonade/models"
 	"net/http"
 )
 
 func UserAuthenticate(handler func(http.ResponseWriter, *framework.Request)) http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		authKey := r.Header.Get("Auth-Key")
-		if authKey == "" {
-			framework.WriteError(w, r, http.StatusUnauthorized, errors.New("Auth key is not present"))
+		sessionKey, err := r.Cookie("lemonades_session_key")
+		if err != nil {
+			framework.WriteError(w, r, http.StatusUnauthorized, errors.New("Illegal request"))
 			return
 		}
-		user, err := models.GetUserByAuthKey(authKey)
+		if sessionKey.Value == "" {
+			framework.WriteError(w, r, http.StatusUnauthorized, errors.New("Illegal request"))
+			return
+		}
+		logger.Debug("Session key is", sessionKey.Value)
+		user, err := models.GetUserBySessionKey(sessionKey.Value)
 		if err != nil {
+			logger.Debug("While finding user")
 			framework.WriteError(w, r, http.StatusUnauthorized, err)
 			return
 		}
@@ -27,12 +34,12 @@ func UserAuthenticate(handler func(http.ResponseWriter, *framework.Request)) htt
 
 func AdminAuthenticate(handler func(http.ResponseWriter, *framework.Request)) http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		authKey := r.Header.Get("Auth-Key")
-		if authKey == "" {
+		sessionKey := r.Header.Get("Auth-Key")
+		if sessionKey == "" {
 			framework.WriteError(w, r, http.StatusUnauthorized, errors.New("Auth key is not present"))
 			return
 		}
-		admin, err := models.GetAdminByAuthKey(authKey)
+		admin, err := models.GetAdminByAuthKey(sessionKey)
 		if err != nil {
 			framework.WriteError(w, r, http.StatusUnauthorized, err)
 			return

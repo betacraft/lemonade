@@ -31,3 +31,5 @@ echo "Adding aws"
 go get github.com/AdRoll/goamz/aws
 echo "Adding logrus sentry hook"
 go get github.com/sirupsen/logrus/hooks/sentry
+echo "Adding mailer"
+go get github.com/jordan-wright/email
