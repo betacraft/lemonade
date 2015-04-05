@@ -36,7 +36,10 @@ func RegisterUser(w http.ResponseWriter, r *http.Request) {
 	}
 	// notifying to the admins
 	go func(user *models.User) {
-		u := models.GetUserByAuthKey(user.AuthKey)
+		u, err := models.GetUserByAuthKey(user.AuthKey)
+		if err != nil {
+			u = user
+		}
 		mail := email.NewEmail()
 		mail.From = "lemonades@rainingclouds.com"
 		mail.Subject = fmt.Sprintf("%v requested access to lemonades", u.Name)
