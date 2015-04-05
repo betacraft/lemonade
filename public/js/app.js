@@ -116,7 +116,7 @@
         $scope.login = function () {
             var btn = $('#loginButton').button('loading');
             $http.post(baseUrl + '/user/login', $scope.user).success(function (data, status) {
-                console.log(data);
+                //console.log(data);
                 btn.button('reset');
                 if (data.success) {
                     $scope.loginStatus.is_success = true;
@@ -131,7 +131,7 @@
                 $scope.loginStatus.is_success = false;
 
             }).error(function (data, status) {
-                console.log(data);
+                //console.log(data);
                 $scope.loginStatus.message = data.message;
                 $scope.loginStatus.is_success = false;
                 btn.button('reset');
@@ -144,25 +144,25 @@
 
         $scope.logout = function(){
             $http.post(baseUrl + '/user/logout',null).success(function (data, status) {
-                console.log(data);
+                //console.log(data);
                 if (data.success) {
                     ipCookie.remove("lemonades_session_key");
                     $location.path("/login");
                 }
             }).error(function (data, status) {
-                console.log(data);
+                //console.log(data);
             });
         };
 
         $scope.init = function(){
             $http.get(baseUrl + '/user/deals').success(function (data, status) {
-                console.log(data);
+                //console.log(data);
                 if (data.success) {
                     $scope.deal = data.deal;
                 }
 
             }).error(function (data, status) {
-                console.log(data);
+                //console.log(data);
             });
         };
     });
@@ -182,12 +182,12 @@
         $scope.init = function(){
             $window.scrollTo(0,0);
             $http.get(baseUrl + '/deal/' + $scope.dealId).success(function (data, status) {
-                console.log(data);
+                //console.log(data);
                 if (data.success) {
                     $scope.deal = data.deal;
                 }
             }).error(function (data, status) {
-                console.log(data);
+                //console.log(data);
             });
         };
     });
@@ -217,7 +217,7 @@
             var btn = $('#signUpButton').button('loading');
             $scope.signUpStatus.is_tried = true;
             $http.post(baseUrl + '/user', $scope.user).success(function (data, status) {
-                console.log(data);
+                //console.log(data);
                 btn.button('reset');
                 if (data.success) {
                     $scope.signUpStatus.is_success = true;
@@ -228,7 +228,7 @@
                 $scope.signUpStatus.is_success = false;
 
             }).error(function (data, status) {
-                console.log(data);
+                //console.log(data);
                 $scope.signUpStatus.message = data.message;
                 $scope.signUpStatus.is_success = false;
                 btn.button('reset');
