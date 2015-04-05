@@ -1,3 +1,12 @@
+<div id="fb-root"></div>
+<script>(function (d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) return;
+    js = d.createElement(s);
+    js.id = id;
+    js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&appId=311407208924605&version=v2.3";
+    fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
 <script>
     // Include the UserVoice JavaScript SDK (only needed once on a page)
     UserVoice = window.UserVoice || [];
@@ -67,6 +76,7 @@
 </div>
 <div class="container-fluid">
     <h1 class="text-center" style="color:#e8277a; ">How it works ?</h1>
+
     <div class="col-md-12" style="margin-bottom: 50px;">
         <img src="/public/img/flow_white.png" style="display: block;
     width: 80%;
@@ -75,22 +85,73 @@
     margin-right: auto;"/>
     </div>
 
-    <div class="col-md-12 text-center" style="margin-bottom: 100px;margin-top: 40px;">
+    <div class="col-md-12 text-center" style="margin-bottom: 30px;margin-top: 40px;">
         <a href="" class="btn btn-lg btn-primary" ng-click="signUp()">Register</a>
     </div>
 </div>
-<div class="container-fluid" style="background-color: #e8277a;padding: 30px;">
+<hr>
+<div class="row" >
+    <div class="col-md-12 text-center" style="margin-bottom: 50px;">
+        <span style="font-size: 25px;">Spread your <span style="color:#e8277a; "><3</span> for us.</span>
+    </div>
+</div>
 
-    <div class="row">
-        <div class="col-md-3 col-md-offset-3 text-left">
+<div class="row" style="margin-bottom: 50px;">
+    <div class="col-md-1 col-md-offset-4">
+        <div class="fb-share-button" data-href="http://lemonades.in"
+             data-layout="button_count"></div>
+    </div>
+    <div class="col-md-1 text-center" style="margin-right: 10px;">
+        <a href="https://twitter.com/share" class="twitter-share-button" data-size="large"
+           data-url="http://lemonades.in">Tweet</a>
+        <script>!function (d, s, id) {
+            var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https';
+            if (!d.getElementById(id)) {
+                js = d.createElement(s);
+                js.id = id;
+                js.src = p + '://platform.twitter.com/widgets.js';
+                fjs.parentNode.insertBefore(js, fjs);
+            }
+        }(document, 'script', 'twitter-wjs');</script>
+    </div>
+    <div class="col-md-2">
+        <!-- Place this tag where you want the share button to render. -->
+        <div class="g-plus" data-action="share" data-height="24" data-href="http://lemonades.in"></div>
+
+        <!-- Place this tag after the last share tag. -->
+        <script type="text/javascript">
+            (function () {
+                var po = document.createElement('script');
+                po.type = 'text/javascript';
+                po.async = true;
+                po.src = 'https://apis.google.com/js/platform.js';
+                var s = document.getElementsByTagName('script')[0];
+                s.parentNode.insertBefore(po, s);
+            })();
+        </script>
+    </div>
+</div>
+
+<div class="container-fluid">
+
+    <div class="row" style="background-color: #e8277a;padding: 30px;">
+        <div class="col-md-2 col-md-offset-1 text-left">
             <a style="color: #fee33d;">Privacy Policy</a><br>
             <a style="color: #fee33d;">Terms and Conditions</a><br>
-            <a style="color: #fee33d;">Policy of Deals</a><br>
+            <a style="color: #fee33d;" href="mailto:akshay@rainingclouds.com?subject=Add this product to Lemonades">Suggest
+                Deal Type</a><br>
         </div>
-        <div class="col-md-3 text-right">
-            <a style="color: #fee33d;">About Us</a><br>
-            <a style="color: #fee33d;">Contact Us</a><br>
-            <a style="color: #fee33d;">Join our Vendors List</a><br>
+        <div class="col-md-2  text-left">
+
+            <a style="color: #fee33d;" href="http://rainingclouds.com/#!/about_us">About Us</a><br>
+            <a style="color: #fee33d;" href="mailto:ping@rainingclouds.com">Contact Us</a><br>
+            <a style="color: #fee33d;" href="mailto:akshay@rainingclouds.com?subject=Join Lemonades Vendor List">Join
+                our Vendors List</a><br>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 text-center" style="padding: 30px;">
+            <a href="http://rainingclouds.com">(C) RainingClouds Technologies</a>
         </div>
     </div>
 
