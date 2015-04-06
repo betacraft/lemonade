@@ -173,9 +173,7 @@
                     $scope.deal = data.deal;
                     $scope.contentLoaded = true;
 
-                    $interval(function () {
-                        $("#sharingContent").load(basePath + '/share-widget/' + $scope.deal.id);
-                    }, 5000, 1);
+                   
                 }
             }).error(function (data, status) {
                 //console.log(data);
