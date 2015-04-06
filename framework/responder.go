@@ -26,7 +26,7 @@ func WriteError(w http.ResponseWriter, r *http.Request, c int, err error) {
 }
 
 func WriteHtml(w http.ResponseWriter, tmpl string, data interface{}) {
-	err := templates.ExecuteTemplate(w, tmpl, nil)
+	err := templates.ExecuteTemplate(w, tmpl, data)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}

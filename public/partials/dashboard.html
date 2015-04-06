@@ -1,11 +1,3 @@
-<div id="fb-root"></div>
-<script>(function(d, s, id) {
-    var js, fjs = d.getElementsByTagName(s)[0];
-    if (d.getElementById(id)) return;
-    js = d.createElement(s); js.id = id;
-    js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&appId=1608020712745966&version=v2.3";
-    fjs.parentNode.insertBefore(js, fjs);
-}(document, 'script', 'facebook-jssdk'));</script>
 <script>
     // Include the UserVoice JavaScript SDK (only needed once on a page)
     UserVoice = window.UserVoice || [];
@@ -85,126 +77,115 @@
 <div class="container" ng-controller="DashboardPageController as ctrl" ng-init="init()">
     <div class="col-md-12" ng-show="deal.id">
         <div class="panel panel-primary">
-            <div class="panel-heading text-center" style="font-size: 22px;">
+            <div class="panel-heading text-center" style="font-size: 25px; ">
                 You are buying : {{deal.name}} ({{deal.manufacturer}})
             </div>
             <div class="panel-body">
 
                 <div class="row" style="margin-bottom: 20px;">
                     <div class="col-md-4">
-                        <img width="80%;"
-                             style="margin-left: auto; margin-right: auto;"
-                             src="{{deal.image_link}}">
+                        <div class="row">
+                            <div class="col-md-12 ">
+                                <img width="80%;"
+                                     style="margin-left: auto; margin-right: auto;"
+                                     src="{{deal.image_link}}">
+                            </div>
+                        </div>
+                        <div class="row" style="margin-top: 20px;">
+                            <div class="col-md-10 col-md-offset-1">
+                                <div class="row">
+                                    <div class="col-md-4"><strong>Screen Size</strong></div>
+                                    <div class="col-md-8">{{deal.screen_size}}</div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4"><strong>CPU</strong></div>
+                                    <div class="col-md-8">{{deal.cpu}}</div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4"><strong>GPU</strong></div>
+                                    <div class="col-md-8">{{deal.gpu}}</div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4"><strong>Memory</strong></div>
+                                    <div class="col-md-8">{{deal.memory}}</div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4"><strong>Camera</strong></div>
+                                    <div class="col-md-8">{{deal.camera}}</div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4"><strong>OS</strong></div>
+                                    <div class="col-md-8">{{deal.os}}</div>
+                                </div>
+                                <div class="row" style="margin-bottom: 20px;">
+                                    <div class="col-md-4"><strong>Battery</strong></div>
+                                    <div class="col-md-8">{{deal.battery}}</div>
+                                </div>
+                                <a style="" href="{{deal.full_specification_link}}" target="_blank">View Full
+                                    Specs
+                                    Here</a>
+                            </div>
+                        </div>
+
                     </div>
                     <div class="col-md-8">
+                        <div class="row" style="margin-top: 20px;margin-bottom: 20px;">
+                            <div class="col-md-4 text-center">
+                                <span>MRP (Rs)</span>
+                                <h1 style="color:#e8277a;">{{deal.mrp}}</h1>
+                            </div>
+                            <div class="col-md-4 text-center">
+                                <span>Current Discount</span>
+
+                                <h1 style="color:#e8277a;">{{deal.current_discount}}</h1>
+                            </div>
+                            <div class="col-md-4 text-center">
+                                <span>Closing On</span>
+
+                                <h1 style="color:#e8277a;">{{deal.closing_on | date :'dd-MMM'}}</h1>
+                            </div>
+                            <div class="col-md-4 text-center">
+                                <span>Current People Count</span>
+
+                                <h1 style="color:#e8277a;">{{deal.current_people_count}}</h1>
+                            </div>
+                            <div class="col-md-4 text-center">
+                                <span>Next Target</span>
+
+                                <h1 style="color:#e8277a;">{{deal.next_discount_for}} People</h1>
+                                <span>For {{deal.next_discount}}</span>
+                            </div>
+                        </div>
+                        <hr>
                         <div class="row">
-                            <div class="col-md-4"><strong>Screen Size</strong></div>
-                            <div class="col-md-8">{{deal.screen_size}}</div>
+                            <div class="col-md-12 text-center" style="margin-top: 10px;margin-bottom: 20px;font-size: 22px;">
+                                Share this deal to get <span style="color: #e8277a;">More discount</span>
+                            </div>
                         </div>
-                        <div class="row">
-                            <div class="col-md-4"><strong>CPU</strong></div>
-                            <div class="col-md-8">{{deal.cpu}}</div>
+                        <div id="sharingContent" class="row" style="">
+
                         </div>
-                        <div class="row">
-                            <div class="col-md-4"><strong>GPU</strong></div>
-                            <div class="col-md-8">{{deal.gpu}}</div>
+                        <hr>
+                        <div class="col-md-12">
+                            <dir-disqus disqus-shortname="lemonades"
+                                        disqus-identifier="{{ deal.id }}"
+                                        disqus-url="http://lemonades.in/#!/share/{{deal.id}}"
+                                        ready-to-bind="{{ contentLoaded }}">
+                            </dir-disqus>
+
+                            <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments
+                                powered by Disqus.</a></noscript>
                         </div>
-                        <div class="row">
-                            <div class="col-md-4"><strong>Memory</strong></div>
-                            <div class="col-md-8">{{deal.memory}}</div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-4"><strong>Camera</strong></div>
-                            <div class="col-md-8">{{deal.camera}}</div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-4"><strong>OS</strong></div>
-                            <div class="col-md-8">{{deal.os}}</div>
-                        </div>
-                        <div class="row" style="margin-bottom: 20px;">
-                            <div class="col-md-4"><strong>Battery</strong></div>
-                            <div class="col-md-8">{{deal.battery}}</div>
-                        </div>
-                        <a style="" href="{{deal.full_specification_link}}" target="_blank">View Full
-                            Specs
-                            Here</a>
                     </div>
                 </div>
-                <div class="row" style="border-top: 1px solid #ecf0f1;"></div>
-                <div class="row" style="margin-top: 20px;margin-bottom: 20px;">
-                    <div class="col-md-3 text-center">
-                        <span>MRP (Rs)</span>
 
-                        <h1 style="color:#e8277a;">{{deal.mrp}}</h1>
-                    </div>
-                    <div class="col-md-2 text-center">
-                        <span>Current Discount</span>
-
-                        <h1 style="color:#e8277a;">{{deal.current_discount}}</h1>
-                    </div>
-                    <div class="col-md-2 text-center">
-                        <span>Closing On</span>
-
-                        <h1 style="color:#e8277a;">{{deal.closing_on | date :'dd-MMM'}}</h1>
-                    </div>
-                    <div class="col-md-2 text-center">
-                        <span>Current People Count</span>
-
-                        <h1 style="color:#e8277a;">{{deal.current_people_count}}</h1>
-                    </div>
-                    <div class="col-md-2 text-center">
-                        <span>Next Discount</span>
-
-                        <h1 style="color:#e8277a;">{{deal.next_discount}}</h1>
-                        <span>For {{deal.next_discount_for}} People</span>
-                    </div>
-                </div>
-                <div class="row" style="border-top: 1px solid #ecf0f1;"></div>
-                <div class="row" style="margin-top: 10px;">
-                    <div class="col-md-12 text-center" style="margin-bottom: 20px;font-size: 22px;">
-                        Share this deal to get <span style="color: #e8277a;">More discount</span>
-                    </div>
-                    <div class="col-md-2 col-md-offset-3">
-                        <div class="fb-share-button" data-href="http://www.lemonades.in/#!/share/{{deal.id}}?utm_source=fb_share_dashboard&utm_medium=website&utm_campaign=share"
-                             data-layout="button_count"></div>
-                    </div>
-                    <div class="col-md-2">
-                        <a href="https://twitter.com/share" class="twitter-share-button" data-size="large"
-                           data-text="Make groups and Get huge discounts on mobiles #mobiledevices #smartphones"
-                           data-url="http://www.lemonades.in/#!/share/{{deal.id}}?utm_source=tw_share_dashboard&utm_medium=website&utm_campaign=share">Tweet</a>
-                        <script>!function (d, s, id) {
-                            var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https';
-                            if (!d.getElementById(id)) {
-                                js = d.createElement(s);
-                                js.id = id;
-                                js.src = p + '://platform.twitter.com/widgets.js';
-                                fjs.parentNode.insertBefore(js, fjs);
-                            }
-                        }(document, 'script', 'twitter-wjs');</script>
-                    </div>
-                    <div class="col-md-3">
-                        <!-- Place this tag where you want the share button to render. -->
-                        <div class="g-plus" data-action="share" data-annotation="bubble" data-height="24" data-href="http://www.lemonades.in/#!/share/{{deal.id}}?utm_source=gplus_share_dashboard&utm_medium=website&utm_campaign=share"></div>
-
-                        <!-- Place this tag after the last share tag. -->
-                        <script type="text/javascript">
-                            (function () {
-                                var po = document.createElement('script');
-                                po.type = 'text/javascript';
-                                po.async = true;
-                                po.src = 'https://apis.google.com/js/platform.js';
-                                var s = document.getElementsByTagName('script')[0];
-                                s.parentNode.insertBefore(po, s);
-                            })();
-                        </script>
-                    </div>
-                </div>
             </div>
             <div class="panel-footer">
 
             </div>
         </div>
     </div>
+
     <div class="col-md-12 text-center" ng-hide="deal.id">
         <h3>Your deal is not yet approved, we are working on it. You will be notified as soon as deal is up.</h3>
     </div>

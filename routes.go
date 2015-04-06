@@ -12,6 +12,7 @@ import (
 // the kernel will take care of adding these routes in the routine
 func pushRoutes(mux *bone.Mux) {
 	mux.Get("/", http.HandlerFunc(controllers.Index))
+	mux.Get("/share-widget/:id", http.HandlerFunc(controllers.ShareWidget))
 	// actual apis
 	// admin apis
 	mux.Post("/api/v1/admin", http.HandlerFunc(controllers.RegisterAdmin))

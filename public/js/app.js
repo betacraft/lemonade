@@ -1,10 +1,16 @@
 (function () {
-    var app = angular.module('lemonade', ['ngRoute', 'ipCookie', 'ngAnimate']);
+    var app = angular.module('lemonade', ['ngRoute', 'ipCookie', 'ngAnimate','angularUtils.directives.dirDisqus']);
     var baseUrl;
     if (window.location.port != "") {
         baseUrl = location.protocol + "//" + window.location.hostname + ":" + window.location.port + "/api/v1"
     } else {
         baseUrl = location.protocol + "//" + window.location.hostname + "/api/v1"
+    }
+    var basePath;
+    if (window.location.port != "") {
+        basePath = location.protocol + "//" + window.location.hostname + ":" + window.location.port;
+    } else {
+        basePath = location.protocol + "//" + window.location.hostname;
     }
     app.run(function ($rootScope) {
         $rootScope.loading = false;
@@ -15,7 +21,7 @@
         $rootScope.selectedApp = {};
     });
     // adding the interceptor for the session validation
-    app.factory('myHttpInterceptor', function ($q, $window, $rootScope,$location) {
+    app.factory('myHttpInterceptor', function ($q, $window, $rootScope, $location) {
         return {
             // optional method
             'request': function (config) {
@@ -81,6 +87,10 @@
                 templateUrl: 'public/partials/share.html',
                 controller: 'SharePageController'
             }).
+            when('/share-widget/:dealId', {
+                templateUrl: 'public/partials/shareWidget.html',
+                controller: 'ShareWidgetController'
+            }).
             when('/sign-up/success', {
                 templateUrl: 'public/partials/signUpSuccess.html',
                 controller: 'SignUpSuccessPageController'
@@ -107,7 +117,7 @@
         };
     });
 
-    app.controller('LoginPageController', function ($scope, $http, $location, $window,ipCookie) {
+    app.controller('LoginPageController', function ($scope, $http, $location, $window, ipCookie) {
         $scope.loginStatus = {};
         $scope.user = {};
         $scope.goToDashboard = function () {
@@ -139,11 +149,12 @@
         };
     });
 
-    app.controller('DashboardPageController', function ($scope, $http, $location, $window,ipCookie) {
+    app.controller('DashboardPageController', function ($scope, $http, $location, $window, ipCookie, $interval) {
         $scope.deal = {};
+        $scope.contentLoaded = false;
 
-        $scope.logout = function(){
-            $http.post(baseUrl + '/user/logout',null).success(function (data, status) {
+        $scope.logout = function () {
+            $http.post(baseUrl + '/user/logout', null).success(function (data, status) {
                 //console.log(data);
                 if (data.success) {
                     ipCookie.remove("lemonades_session_key");
@@ -154,24 +165,29 @@
             });
         };
 
-        $scope.init = function(){
+        $scope.init = function () {
+            $.getScript('http://platform.twitter.com/widgets.js');
             $http.get(baseUrl + '/user/deals').success(function (data, status) {
                 //console.log(data);
                 if (data.success) {
                     $scope.deal = data.deal;
-                }
+                    $scope.contentLoaded = true;
 
+                    $interval(function () {
+                        $("#sharingContent").load(basePath + '/share-widget/' + $scope.deal.id);
+                    }, 5000, 1);
+                }
             }).error(function (data, status) {
                 //console.log(data);
             });
         };
     });
 
-    app.controller('SharePageController', function ($scope, $http, $location, $window,$routeParams) {
+    app.controller('SharePageController', function ($scope, $http, $location, $window, $routeParams) {
         $scope.dealId = $routeParams.dealId;
         $scope.deal = {};
 
-        $scope.goToRegister = function(){
+        $scope.goToRegister = function () {
             $location.path("/sign-up");
         };
 
@@ -179,8 +195,8 @@
             $window.location.href = '/';
         };
 
-        $scope.init = function(){
-            $window.scrollTo(0,0);
+        $scope.init = function () {
+            $window.scrollTo(0, 0);
             $http.get(baseUrl + '/deal/' + $scope.dealId).success(function (data, status) {
                 //console.log(data);
                 if (data.success) {
@@ -192,9 +208,13 @@
         };
     });
 
+    app.controller('ShareWidgetController', function ($scope, $http, $location, $window, $routeParams) {
+        $scope.dealId = $routeParams.dealId;
+    });
+
     app.controller('SignUpSuccessPageController', function ($scope, $http, $location, $window) {
-        $scope.init=function(){
-            $window.scrollTo(0,0);
+        $scope.init = function () {
+            $window.scrollTo(0, 0);
         };
         $scope.goToDashboard = function () {
             $window.location.href = '/';
@@ -205,8 +225,8 @@
         $scope.signUpStatus = {};
         $scope.user = {city: "Pune"};
 
-        $scope.init = function(){
-            $window.scrollTo(0,0);
+        $scope.init = function () {
+            $window.scrollTo(0, 0);
         };
 
         $scope.goToDashboard = function () {
