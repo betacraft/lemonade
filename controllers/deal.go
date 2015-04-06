@@ -60,6 +60,7 @@ func CreateDeal(w http.ResponseWriter, r *framework.Request) {
 	}
 	framework.WriteResponse(w, http.StatusOK, framework.JSONResponse{
 		"success": true,
+		"deal_id": phoneDeal.Id,
 		"message": "Deal is created",
 	})
 }
