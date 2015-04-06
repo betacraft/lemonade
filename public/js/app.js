@@ -173,7 +173,7 @@
                     $scope.deal = data.deal;
                     $scope.contentLoaded = true;
 
-                   
+
                 }
             }).error(function (data, status) {
                 //console.log(data);
