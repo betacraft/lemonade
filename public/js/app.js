@@ -68,6 +68,8 @@
                 '</div>';
         }
 
+
+
         return {
             restrict: 'A',
             scope: {},
@@ -76,15 +78,19 @@
                     var href = newValue;
                     var numposts = attrs.numposts || 5;
                     var colorscheme = attrs.colorscheme || 'light';
+                    console.log("setting up");
                     elem.html(createHTML(href, numposts, colorscheme));
-                    FB.XFBML.parse(elem[0]);
+                    if(typeof FB !== 'undefined') {//we want it to match
+                        console.log("testing");
+                        FB.XFBML.parse(elem[0]);
+                    }
                 });
             }
         };
     });
     app.directive('dyFbLike', function () {
         function createHTML(href) {
-            return '<div class="fb-share-button" data-href="' + href +'" data-layout="button_count"></div>';
+            return '<div class="fb-share-button" data-href="' + href + '" data-layout="button_count"></div>';
         }
 
         return {
@@ -101,8 +107,9 @@
     });
     app.directive('dyTwShare', function () {
         function createHTML(href) {
-            return ' <a href="https://twitter.com/share" class="twitter-share-button" data-size="small" data-text="Make groups and Get huge discounts on mobiles #mobiledevices #smartphones" data-url="'+href+'">Tweet</a>';
+            return ' <a href="https://twitter.com/share" class="twitter-share-button" data-size="small" data-text="Make groups and Get huge discounts on mobiles #mobiledevices #smartphones" data-url="' + href + '">Tweet</a>';
         }
+
         return {
             restrict: 'A',
             scope: {},
@@ -116,8 +123,9 @@
     });
     app.directive('dyGplusShare', function () {
         function createHTML(href) {
-            return '<div class="g-plus" data-action="share" data-annotation="bubble" data-height="20" data-href="'+href+'"></div>';
+            return '<div class="g-plus" data-action="share" data-annotation="bubble" data-height="20" data-href="' + href + '"></div>';
         }
+
         return {
             restrict: 'A',
             scope: {},
