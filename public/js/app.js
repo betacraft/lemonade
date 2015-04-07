@@ -1,5 +1,5 @@
 (function () {
-    var app = angular.module('lemonade', ['ngRoute', 'ipCookie', 'ngAnimate','angularUtils.directives.dirDisqus']);
+    var app = angular.module('lemonade', ['ngRoute', 'ipCookie', 'ngAnimate']);
     var baseUrl;
     if (window.location.port != "") {
         baseUrl = location.protocol + "//" + window.location.hostname + ":" + window.location.port + "/api/v1"
@@ -15,10 +15,6 @@
     app.run(function ($rootScope) {
         $rootScope.loading = false;
         $rootScope.httpCount = 0;
-        $rootScope.currentlyShowing = 0;
-        $rootScope.userEmail = "";
-        $rootScope.userName = "";
-        $rootScope.selectedApp = {};
     });
     // adding the interceptor for the session validation
     app.factory('myHttpInterceptor', function ($q, $window, $rootScope, $location) {
@@ -62,7 +58,7 @@
             }
         };
     });
-    // facebook commetns directive
+    // facebook comments directive
     app.directive('dynFbCommentBox', function () {
         function createHTML(href, numposts, colorscheme) {
             return '<div class="fb-comments" ' +
@@ -77,12 +73,58 @@
             scope: {},
             link: function postLink(scope, elem, attrs) {
                 attrs.$observe('pageHref', function (newValue) {
-                    var href        = newValue;
-                    var numposts    = attrs.numposts    || 5;
+                    var href = newValue;
+                    var numposts = attrs.numposts || 5;
                     var colorscheme = attrs.colorscheme || 'light';
-
                     elem.html(createHTML(href, numposts, colorscheme));
                     FB.XFBML.parse(elem[0]);
+                });
+            }
+        };
+    });
+    app.directive('dyFbLike', function () {
+        function createHTML(href) {
+            return '<div class="fb-share-button" data-href="' + href +'" data-layout="button_count"></div>';
+        }
+
+        return {
+            restrict: 'A',
+            scope: {},
+            link: function postLink(scope, elem, attrs) {
+                attrs.$observe('pageHref', function (newValue) {
+                    var href = newValue;
+                    elem.html(createHTML(href));
+                    FB.XFBML.parse(elem[0]);
+                });
+            }
+        };
+    });
+    app.directive('dyTwShare', function () {
+        function createHTML(href) {
+            return ' <a href="https://twitter.com/share" class="twitter-share-button" data-size="small" data-text="Make groups and Get huge discounts on mobiles #mobiledevices #smartphones" data-url="'+href+'">Tweet</a>';
+        }
+        return {
+            restrict: 'A',
+            scope: {},
+            link: function postLink(scope, elem, attrs) {
+                attrs.$observe('pageHref', function (newValue) {
+                    var href = newValue;
+                    elem.html(createHTML(href));
+                });
+            }
+        };
+    });
+    app.directive('dyGplusShare', function () {
+        function createHTML(href) {
+            return '<div class="g-plus" data-action="share" data-annotation="bubble" data-height="20" data-href="'+href+'"></div>';
+        }
+        return {
+            restrict: 'A',
+            scope: {},
+            link: function postLink(scope, elem, attrs) {
+                attrs.$observe('pageHref', function (newValue) {
+                    var href = newValue;
+                    elem.html(createHTML(href));
                 });
             }
         };
