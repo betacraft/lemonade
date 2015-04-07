@@ -146,7 +146,7 @@
 <!--</div>-->
 
 <div class="container" ng-init="init()">
-    <div class="col-md-12" ng-show="deal.id">
+    <div class="col-md-12" ng-show="deal.id && contentLoaded">
         <div class="panel panel-default">
             <div class="panel-heading text-center" >
 
@@ -280,7 +280,7 @@
         </div>
     </div>
 
-    <div class="col-md-12 text-center" ng-hide="deal.id">
+    <div class="col-md-12 text-center" ng-show="!deal.id && contentLoaded">
         <h3>Your deal is not yet approved, we are working on it. You will be notified as soon as deal is up.</h3>
     </div>
 </div>
