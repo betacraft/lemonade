@@ -16,6 +16,10 @@ func Dashboard(w http.ResponseWriter, r *framework.Request) {
 	framework.WriteHtml(w, "deal.html", map[string]interface{}{"dealId": user.DealId.Hex()})
 }
 
+func Share(w http.ResponseWriter, r *http.Request) {
+	framework.WriteHtml(w, "share.html", map[string]interface{}{"dealId": bone.GetValue(r, "id")})
+}
+
 func ShareWidget(w http.ResponseWriter, r *http.Request) {
 	framework.WriteHtml(w, "shareWidget.html", map[string]interface{}{"dealId": bone.GetValue(r, "id")})
 }

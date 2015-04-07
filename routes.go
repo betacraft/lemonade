@@ -13,6 +13,7 @@ import (
 func pushRoutes(mux *bone.Mux) {
 	mux.Get("/", http.HandlerFunc(controllers.Index))
 	mux.Get("/share-widget/:id", http.HandlerFunc(controllers.ShareWidget))
+	mux.Get("/share/:id", http.HandlerFunc(controllers.Share))
 	mux.Get("/dashboard", interceptors.UserAuthenticate(controllers.Dashboard))
 	mux.Get("/deal/:id", http.HandlerFunc(controllers.ShareWidget))
 	// actual apis

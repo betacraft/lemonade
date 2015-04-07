@@ -157,10 +157,10 @@
                 templateUrl: 'public/partials/login.html',
                 controller: 'LoginPageController'
             }).
-            when('/share/:dealId', {
-                templateUrl: 'public/partials/share.html',
-                controller: 'SharePageController'
-            }).
+            //when('/share/:dealId', {
+            //    templateUrl: 'public/partials/share.html',
+            //    controller: 'SharePageController'
+            //}).
             when('/share-widget/:dealId', {
                 templateUrl: 'public/partials/shareWidget.html',
                 controller: 'ShareWidgetController'
@@ -265,9 +265,9 @@
             $window.location.href = '/';
         };
 
-        $scope.init = function () {
+        $scope.init = function (dealId) {
             $window.scrollTo(0, 0);
-            $http.get(baseUrl + '/deal/' + $scope.dealId).success(function (data, status) {
+            $http.get(baseUrl + '/deal/' + dealId).success(function (data, status) {
                 //console.log(data);
                 if (data.success) {
                     $scope.deal = data.deal;
