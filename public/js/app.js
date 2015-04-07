@@ -15,6 +15,7 @@
     app.run(function ($rootScope) {
         $rootScope.loading = false;
         $rootScope.httpCount = 0;
+        $rootScope.bad = 0;
     });
     // adding the interceptor for the session validation
     app.factory('myHttpInterceptor', function ($q, $window, $rootScope, $location) {
@@ -69,7 +70,6 @@
         }
 
 
-
         return {
             restrict: 'A',
             scope: {},
@@ -78,12 +78,11 @@
                     var href = newValue;
                     var numposts = attrs.numposts || 5;
                     var colorscheme = attrs.colorscheme || 'light';
-                    console.log("setting up");
                     elem.html(createHTML(href, numposts, colorscheme));
-                    if(typeof FB !== 'undefined') {//we want it to match
-                        console.log("testing");
-                        FB.XFBML.parse(elem[0]);
-                    }
+
+                    console.log("testing");
+                    FB.XFBML.parse(elem[0]);
+
                 });
             }
         };
@@ -170,10 +169,10 @@
                 templateUrl: 'public/partials/signUpSuccess.html',
                 controller: 'SignUpSuccessPageController'
             }).
-            when('/dashboard', {
-                templateUrl: 'public/partials/dashboard.html',
-                controller: 'DashboardPageController'
-            }).
+            //when('/dashboard', {
+            //    templateUrl: 'public/partials/dashboard.html',
+            //    controller: 'DashboardPageController'
+            //}).
             otherwise({
                 redirectTo: '/'
             });
@@ -209,7 +208,7 @@
                         expires: 1,
                         path: '/'
                     });
-                    $location.path("/dashboard");
+                    $window.location.href='/dashboard';
                     return;
                 }
                 $scope.loginStatus.message = data.message;
@@ -224,7 +223,7 @@
         };
     });
 
-    app.controller('DashboardPageController', function ($scope, $http, $location, $window, ipCookie, $interval) {
+    app.controller('DashboardPageController', function ($scope, $http, $location, $window, ipCookie, $interval, $rootScope) {
         $scope.deal = {};
         $scope.contentLoaded = false;
 
@@ -233,7 +232,7 @@
                 //console.log(data);
                 if (data.success) {
                     ipCookie.remove("lemonades_session_key");
-                    $location.path("/login");
+                    $window.location.href='/#!/login';
                 }
             }).error(function (data, status) {
                 //console.log(data);
@@ -247,8 +246,6 @@
                 if (data.success) {
                     $scope.deal = data.deal;
                     $scope.contentLoaded = true;
-
-
                 }
             }).error(function (data, status) {
                 //console.log(data);

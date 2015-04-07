@@ -13,6 +13,8 @@ import (
 func pushRoutes(mux *bone.Mux) {
 	mux.Get("/", http.HandlerFunc(controllers.Index))
 	mux.Get("/share-widget/:id", http.HandlerFunc(controllers.ShareWidget))
+	mux.Get("/dashboard", interceptors.UserAuthenticate(controllers.Dashboard))
+	mux.Get("/deal/:id", http.HandlerFunc(controllers.ShareWidget))
 	// actual apis
 	// admin apis
 	mux.Post("/api/v1/admin", http.HandlerFunc(controllers.RegisterAdmin))
