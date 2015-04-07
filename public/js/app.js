@@ -169,6 +169,10 @@
                 templateUrl: 'public/partials/signUpSuccess.html',
                 controller: 'SignUpSuccessPageController'
             }).
+            when('/privacy', {
+                templateUrl: 'public/partials/privacyPolicy.html',
+                controller: 'PrivacyPolicyPageController'
+            }).
             //when('/dashboard', {
             //    templateUrl: 'public/partials/dashboard.html',
             //    controller: 'DashboardPageController'
@@ -188,6 +192,19 @@
         };
         $scope.login = function () {
             $location.path("/login");
+        };
+        $scope.policy = function () {
+            $location.path("/privacy");
+        };
+    });
+
+    app.controller('PrivacyPolicyPageController', function ($scope, $http, $location, $window) {
+
+        $scope.init = function(){
+            $window.scrollTo(0, 0);
+        };
+        $scope.goToDashboard = function () {
+            $location.path("/");
         };
     });
 
@@ -297,6 +314,10 @@
 
         $scope.init = function () {
             $window.scrollTo(0, 0);
+        };
+
+        $scope.policy = function () {
+            $location.path("/privacy");
         };
 
         $scope.goToDashboard = function () {
