@@ -275,7 +275,7 @@
         $scope.deal = {};
 
         $scope.goToRegister = function () {
-            $location.path("/sign-up");
+            $window.location.href = "/#!/sign-up";
         };
 
         $scope.goToDashboard = function () {

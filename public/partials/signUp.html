@@ -137,6 +137,9 @@
                     <label for="city">Your City</label>
                     <select class="form-control" id="city" ng-model="user.city" name="city">
                         <option>Pune</option>
+                        <option>Mumbai</option>
+                        <option>Banglore</option>
+                        <option>Other</option>
                     </select>
                 </div>
                 <div ng-class="{'has-error form-group':form.$submitted && form.locality.$error.required === true,'form-group':true}">
