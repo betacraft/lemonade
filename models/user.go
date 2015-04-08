@@ -46,9 +46,6 @@ type User struct {
 	Password          string `bson:"password" json:"-"`
 	ProfilePicLink    string `bson:"profile_pic" json:"profile_pic"`
 
-	CurrentMobileHandset string `bson:"current_handset" json:"current_handset"`
-	LookingForHandset    string `bson:"looking_for_handset" json:"looking_for_handset"`
-
 	OtpCode string `bson:"otp_code" json:"-"`
 
 	Address Address `bson:"address" json:"address"`
@@ -60,7 +57,7 @@ type User struct {
 	IsAccessEnabled bool   `bson:"is_access_enabled" json:"is_access_enabled"`
 	Reason          string `bson:"reason" json:"reason"`
 
-	DealId bson.ObjectId `bson:"deal_id,omitempty" json:"deal_id"`
+	GroupIds []bson.ObjectId `bson:"deal_id,omitempty" json:"deal_id"`
 
 	CreatedAt time.Time `bson:"created_at" json:"created_at"`
 	UpdatedAt time.Time `bson:"updated_at" json:"updated_at"`
@@ -103,31 +100,6 @@ func CreateUser(userMap map[string]interface{}) (*User, error) {
 	user.Password, ok = userMap["password"].(string)
 	if !ok {
 		return nil, errors.New("Password is not present")
-	}
-	user.CurrentMobileHandset, ok = userMap["current_handset"].(string)
-	if !ok {
-		return nil, errors.New("Current Handset is not present")
-	}
-	user.LookingForHandset, ok = userMap["looking_for_handset"].(string)
-	if !ok {
-		return nil, errors.New("Looking for Handset is not present")
-	}
-	user.Address = Address{}
-	user.Address.City, ok = userMap["city"].(string)
-	if !ok {
-		return nil, errors.New("City is not present")
-	}
-	user.Address.Locality, ok = userMap["locality"].(string)
-	if !ok {
-		return nil, errors.New("Locality is not present")
-	}
-	user.Address.Address, ok = userMap["address"].(string)
-	if !ok {
-		return nil, errors.New("Address is not present")
-	}
-	user.Address.ZipCode, ok = userMap["zip_code"].(string)
-	if !ok {
-		return nil, errors.New("Zip Code is not present")
 	}
 	user.IsConnectedWithGooglePlus = false
 	user.IsConnectedWithFacebook = false

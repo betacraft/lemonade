@@ -59,83 +59,6 @@
             }
         };
     });
-    // facebook comments directive
-    app.directive('dynFbCommentBox', function () {
-        function createHTML(href, numposts, colorscheme) {
-            return '<div class="fb-comments" ' +
-                'data-href="' + href + '" ' +
-                'data-numposts="' + numposts + '" ' +
-                'data-colorsheme="' + colorscheme + '">' +
-                '</div>';
-        }
-
-
-        return {
-            restrict: 'A',
-            scope: {},
-            link: function postLink(scope, elem, attrs) {
-                attrs.$observe('pageHref', function (newValue) {
-                    var href = newValue;
-                    var numposts = attrs.numposts || 5;
-                    var colorscheme = attrs.colorscheme || 'light';
-                    elem.html(createHTML(href, numposts, colorscheme));
-
-                    console.log("testing");
-                    FB.XFBML.parse(elem[0]);
-
-                });
-            }
-        };
-    });
-    app.directive('dyFbLike', function () {
-        function createHTML(href) {
-            return '<div class="fb-share-button" data-href="' + href + '" data-layout="button_count"></div>';
-        }
-
-        return {
-            restrict: 'A',
-            scope: {},
-            link: function postLink(scope, elem, attrs) {
-                attrs.$observe('pageHref', function (newValue) {
-                    var href = newValue;
-                    elem.html(createHTML(href));
-                    FB.XFBML.parse(elem[0]);
-                });
-            }
-        };
-    });
-    app.directive('dyTwShare', function () {
-        function createHTML(href) {
-            return ' <a href="https://twitter.com/share" class="twitter-share-button" data-size="small" data-text="Make groups and Get huge discounts on mobiles #mobiledevices #smartphones" data-url="' + href + '">Tweet</a>';
-        }
-
-        return {
-            restrict: 'A',
-            scope: {},
-            link: function postLink(scope, elem, attrs) {
-                attrs.$observe('pageHref', function (newValue) {
-                    var href = newValue;
-                    elem.html(createHTML(href));
-                });
-            }
-        };
-    });
-    app.directive('dyGplusShare', function () {
-        function createHTML(href) {
-            return '<div class="g-plus" data-action="share" data-annotation="bubble" data-height="20" data-href="' + href + '"></div>';
-        }
-
-        return {
-            restrict: 'A',
-            scope: {},
-            link: function postLink(scope, elem, attrs) {
-                attrs.$observe('pageHref', function (newValue) {
-                    var href = newValue;
-                    elem.html(createHTML(href));
-                });
-            }
-        };
-    });
     // adding http interceptor
     app.config(function ($httpProvider) {
         $httpProvider.interceptors.push('myHttpInterceptor');
@@ -157,10 +80,10 @@
                 templateUrl: 'public/partials/login.html',
                 controller: 'LoginPageController'
             }).
-            //when('/share/:dealId', {
-            //    templateUrl: 'public/partials/share.html',
-            //    controller: 'SharePageController'
-            //}).
+            when('/share/:dealId', {
+                templateUrl: 'public/partials/share.html',
+                controller: 'SharePageController'
+            }).
             when('/share-widget/:dealId', {
                 templateUrl: 'public/partials/shareWidget.html',
                 controller: 'ShareWidgetController'
@@ -173,10 +96,10 @@
                 templateUrl: 'public/partials/privacyPolicy.html',
                 controller: 'PrivacyPolicyPageController'
             }).
-            //when('/dashboard', {
-            //    templateUrl: 'public/partials/dashboard.html',
-            //    controller: 'DashboardPageController'
-            //}).
+            when('/dashboard', {
+                templateUrl: 'public/partials/dashboard.html',
+                controller: 'DashboardPageController'
+            }).
             otherwise({
                 redirectTo: '/'
             });

@@ -2,8 +2,8 @@ export GOPATH="$(dirname "$(dirname "$(dirname "$(dirname "$(pwd)")")")")"
 export PATH=$PATH:$GOPATH/bin
 # Setting up the env variables for the web app
 export ENV=dev
-export LEMN_MG_URI="mongodb://localhost:27017/lemonade"
-export LEMN_MG_DB_NAME="lemonade"
+export LEMN_MG_URI="mongodb://localhost:27017/lemonade2"
+export LEMN_MG_DB_NAME="lemonade2"
 # --
 echo Cleaning up
 go clean
