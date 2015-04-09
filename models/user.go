@@ -4,9 +4,9 @@ import (
 	"errors"
 	"github.com/mholt/binding"
 	"github.com/nu7hatch/gouuid"
-	"github.com/rainingclouds/lemonade/db"
-	"github.com/rainingclouds/lemonade/framework"
-	"github.com/rainingclouds/lemonade/logger"
+	"github.com/rainingclouds/lemonades/db"
+	"github.com/rainingclouds/lemonades/framework"
+	"github.com/rainingclouds/lemonades/logger"
 	"gopkg.in/mgo.v2/bson"
 	"time"
 )

@@ -1,8 +1,8 @@
 package controllers
 
 import (
-	"github.com/rainingclouds/lemonade/framework"
-	"github.com/rainingclouds/lemonade/models"
+	"github.com/rainingclouds/lemonades/framework"
+	"github.com/rainingclouds/lemonades/models"
 	"net/http"
 )
 

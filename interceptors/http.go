@@ -2,7 +2,7 @@ package interceptors
 
 import (
 	"github.com/go-zoo/bone"
-	"github.com/rainingclouds/lemonade/logger"
+	"github.com/rainingclouds/lemonades/logger"
 	"github.com/rcrowley/go-metrics"
 	"net/http"
 	"os"

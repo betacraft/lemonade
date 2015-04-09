@@ -2,9 +2,9 @@ package interceptors
 
 import (
 	"errors"
-	"github.com/rainingclouds/lemonade/framework"
-	"github.com/rainingclouds/lemonade/logger"
-	"github.com/rainingclouds/lemonade/models"
+	"github.com/rainingclouds/lemonades/framework"
+	"github.com/rainingclouds/lemonades/logger"
+	"github.com/rainingclouds/lemonades/models"
 	"net/http"
 )
 

@@ -1,7 +1,7 @@
 package framework
 
 import (
-	"github.com/rainingclouds/lemonade/logger"
+	"github.com/rainingclouds/lemonades/logger"
 	"html/template"
 	"net/http"
 	"net/http/httputil"

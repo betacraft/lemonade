@@ -8,7 +8,7 @@ export LEMN_MG_DB_NAME="lemonade2"
 echo Cleaning up
 go clean
 echo Running go generate 
-go generate github.com/rainingclouds/lemonade/models
+go generate github.com/rainingclouds/lemonades/models
 echo Building Lemonade 
 go vet 
 go get 

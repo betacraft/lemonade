@@ -2,11 +2,11 @@ package main
 
 import (
 	"github.com/go-zoo/bone"
-	"github.com/rainingclouds/lemonade/db"
-	"github.com/rainingclouds/lemonade/framework"
-	"github.com/rainingclouds/lemonade/interceptors"
-	"github.com/rainingclouds/lemonade/logger"
-	"github.com/rainingclouds/lemonade/mailer"
+	"github.com/rainingclouds/lemonades/db"
+	"github.com/rainingclouds/lemonades/framework"
+	"github.com/rainingclouds/lemonades/interceptors"
+	"github.com/rainingclouds/lemonades/logger"
+	"github.com/rainingclouds/lemonades/mailer"
 	"net/http"
 	"os"
 )

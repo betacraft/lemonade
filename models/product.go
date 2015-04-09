@@ -1,7 +1,7 @@
 package models
 
 import (
-	"github.com/rainingclouds/lemonade/db"
+	"github.com/rainingclouds/lemonades/db"
 	"gopkg.in/mgo.v2/bson"
 )
 
@@ -32,5 +32,5 @@ type Product struct {
 }
 
 func (p *Product) Create() error {
-	return db.MgCreateStrong(c, data)
+	return db.MgCreateStrong(C_PRODUCT, p)
 }

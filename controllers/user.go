@@ -3,13 +3,11 @@ package controllers
 import (
 	"errors"
 	"fmt"
-	"github.com/go-zoo/bone"
 	"github.com/jordan-wright/email"
-	"github.com/rainingclouds/lemonade/framework"
-	"github.com/rainingclouds/lemonade/logger"
-	"github.com/rainingclouds/lemonade/mailer"
-	"github.com/rainingclouds/lemonade/models"
-	"gopkg.in/mgo.v2/bson"
+	"github.com/rainingclouds/lemonades/framework"
+	"github.com/rainingclouds/lemonades/logger"
+	"github.com/rainingclouds/lemonades/mailer"
+	"github.com/rainingclouds/lemonades/models"
 	"net/http"
 )
 
@@ -228,46 +226,6 @@ func UserLogout(w http.ResponseWriter, r *framework.Request) {
 	framework.WriteResponse(w, http.StatusOK, framework.JSONResponse{
 		"success": true,
 		"message": "User is successfully logged out",
-	})
-}
-
-func AttachDeal(w http.ResponseWriter, r *framework.Request) {
-	authKey := r.Request.Header.Get("User-Auth-Key")
-	if authKey == "" {
-		framework.WriteError(w, r.Request, http.StatusBadRequest, errors.New("Illegal request"))
-		return
-	}
-	user, err := models.GetUserByAuthKey(authKey)
-	if err != nil {
-		framework.WriteError(w, r.Request, http.StatusBadRequest, err)
-		return
-	}
-	dealIdHex := bone.GetValue(r.Request, "deal_id")
-	dealId := bson.ObjectIdHex(dealIdHex)
-	if !dealId.Valid() {
-		framework.WriteError(w, r.Request, http.StatusBadRequest, errors.New("Illegal request"))
-		return
-	}
-	deal, err := models.GetPhoneDealById(dealId)
-	if err != nil {
-		framework.WriteError(w, r.Request, http.StatusBadRequest, err)
-		return
-	}
-	user.DealId = dealId
-	deal.CurrentPeopleCount = deal.CurrentPeopleCount + 1
-	err = deal.Save()
-	if err != nil {
-		framework.WriteError(w, r.Request, http.StatusInternalServerError, err)
-		return
-	}
-	err = user.Save()
-	if err != nil {
-		framework.WriteError(w, r.Request, http.StatusInternalServerError, err)
-		return
-	}
-	framework.WriteResponse(w, http.StatusOK, framework.JSONResponse{
-		"success": true,
-		"message": "User is attached to the deal",
 	})
 }
 
