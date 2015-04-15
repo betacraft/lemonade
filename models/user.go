@@ -56,12 +56,16 @@ type User struct {
 	IsConnectedWithGooglePlus bool   `bson:"is_gplus" json:"is_gplus"`
 
 	CreatedGroupCount int `bson:"created_group_count" json:"created_group_count"`
-	JoinedGroupCount  int `bson:"created_group_count" json:"created_group_count"`
+	JoinedGroupCount  int `bson:"joined_group_count" json:"joined_group_count"`
 
 	IsAccessEnabled bool   `bson:"is_access_enabled" json:"is_access_enabled"`
 	Reason          string `bson:"reason" json:"reason"`
 
-	GroupIds []bson.ObjectId `bson:"deal_id,omitempty" json:"deal_id"`
+	CreatedGroupIds []bson.ObjectId `bson:"created_group_ids,omitempty" json:"created_group_ids"`
+	JoinedGroupIds  []bson.ObjectId `bson:"joined_group_ids,omitempty" json:"joined_group_ids"`
+
+	CreatedGroups *[]Group `bson:"-" json:"created_groups"`
+	JoinedGroups  *[]Group `bson:"-" json:"joined_groups"`
 
 	CreatedAt time.Time `bson:"created_at" json:"created_at"`
 	UpdatedAt time.Time `bson:"updated_at" json:"updated_at"`

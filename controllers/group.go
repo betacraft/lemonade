@@ -11,6 +11,65 @@ import (
 	"time"
 )
 
+func GetUserJoinedGroups(w http.ResponseWriter, r *framework.Request) {
+	pageNo := 0
+	pageNo, err := strconv.Atoi(r.URL.Query().Get("page"))
+	if err != nil {
+		pageNo = 0
+	}
+	user := r.MustGet("user").(*models.User)
+	if len(user.JoinedGroupIds) < pageNo*9 {
+		framework.WriteResponse(w, http.StatusOK, framework.JSONResponse{
+			"success":       true,
+			"joined_groups": nil,
+		})
+	}
+	var group *models.Group
+	for _, id := range user.JoinedGroupIds[pageNo*9:] {
+		group, err = models.GetGroupById(id)
+		if err != nil {
+			framework.WriteError(w, r.Request, http.StatusInternalServerError, err)
+			return
+		}
+		*user.JoinedGroups = append(*(user.JoinedGroups), *group)
+	}
+	framework.WriteResponse(w, http.StatusOK, framework.JSONResponse{
+		"success":       true,
+		"joined_groups": user.JoinedGroups,
+	})
+
+}
+
+func GetUserCreatedGroups(w http.ResponseWriter, r *framework.Request) {
+	pageNo := 0
+	pageNo, err := strconv.Atoi(r.URL.Query().Get("page"))
+	if err != nil {
+		pageNo = 0
+	}
+	user := r.MustGet("user").(*models.User)
+	if len(user.CreatedGroupIds) < pageNo*9 {
+		framework.WriteResponse(w, http.StatusOK, framework.JSONResponse{
+			"success":        true,
+			"created_groups": nil,
+		})
+	}
+	var group *models.Group
+	for _, id := range user.CreatedGroupIds[pageNo*9:] {
+		group, err = models.GetGroupById(id)
+		if err != nil {
+			framework.WriteError(w, r.Request, http.StatusInternalServerError, err)
+			return
+		}
+		*user.CreatedGroups = append(*(user.CreatedGroups), *group)
+	}
+
+	framework.WriteResponse(w, http.StatusOK, framework.JSONResponse{
+		"success":        true,
+		"created_groups": user.CreatedGroups,
+	})
+
+}
+
 func JoinGroup(w http.ResponseWriter, r *framework.Request) {
 	user := r.MustGet("user").(*models.User)
 	idString := bone.GetValue(r.Request, "id")
@@ -35,6 +94,7 @@ func JoinGroup(w http.ResponseWriter, r *framework.Request) {
 		return
 	}
 	user.JoinedGroupCount = user.JoinedGroupCount + 1
+	user.JoinedGroupIds = append(user.JoinedGroupIds, group.Id)
 	err = user.Save()
 	if err != nil {
 		framework.WriteError(w, r.Request, http.StatusInternalServerError, err)
@@ -158,6 +218,7 @@ func CreateGroup(w http.ResponseWriter, r *framework.Request) {
 		return
 	}
 	user.CreatedGroupCount = user.CreatedGroupCount + 1
+	user.CreatedGroupIds = append(user.CreatedGroupIds, group.Id)
 	err = user.Save()
 	if err != nil {
 		framework.WriteError(w, r.Request, http.StatusInternalServerError, err)

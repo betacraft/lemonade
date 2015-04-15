@@ -25,11 +25,17 @@ func pushRoutes(mux *bone.Mux) {
 	mux.Options("/api/v1/user/logout", framework.OptionsHandler())
 	mux.Post("/api/v1/user/logout", interceptors.UserAuthenticate(controllers.UserLogout))
 	mux.Options("/api/v1/user/confirm_email/:id", framework.OptionsHandler())
+	mux.Options("/api/v1/user/groups/joined", framework.OptionsHandler())
+	mux.Get("/api/v1/user/groups/joined", interceptors.UserAuthenticate(controllers.GetUserJoinedGroups))
+	mux.Options("/api/v1/user/groups/created", framework.OptionsHandler())
+	mux.Get("/api/v1/user/groups/created", interceptors.UserAuthenticate(controllers.GetUserCreatedGroups))
+
 	// mux.Post("/api/v1/user/confirm_email/:id", )
 	mux.Options("/api/v1/group", framework.OptionsHandler())
 	mux.Post("/api/v1/group", interceptors.UserAuthenticate(controllers.CreateGroup))
 	mux.Options("/api/v1/group/:id/join", framework.OptionsHandler())
 	mux.Post("/api/v1/group/:id/join", interceptors.UserAuthenticate(controllers.JoinGroup))
+
 	mux.Options("/api/v1/group/:id", framework.OptionsHandler())
 	mux.Get("/api/v1/group/:id", http.HandlerFunc(controllers.GetGroup))
 	mux.Options("/api/v1/groups", framework.OptionsHandler())
