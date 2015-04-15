@@ -5,4 +5,5 @@ const (
 	C_ADMINS  = "admins"
 	C_PRODUCT = "products"
 	C_DEAL    = "deals"
+	C_GROUP   = "groups"
 )

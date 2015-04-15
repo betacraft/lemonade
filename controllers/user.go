@@ -3,6 +3,7 @@ package controllers
 import (
 	"errors"
 	"fmt"
+	"github.com/go-zoo/bone"
 	"github.com/jordan-wright/email"
 	"github.com/rainingclouds/lemonades/framework"
 	"github.com/rainingclouds/lemonades/logger"
@@ -213,6 +214,24 @@ func AuthenticateUser(w http.ResponseWriter, r *http.Request) {
 			"user":    user,
 			"message": "User is successfully authenticated",
 		})
+}
+
+func ConfirmEmail(w http.ResponseWriter, r *http.Request) {
+	user, err := models.GetUserByAuthKey(bone.GetValue(r, "id"))
+	if err != nil {
+		framework.WriteError(w, r, http.StatusBadRequest, errors.New("You are not yet registered with us"))
+		return
+	}
+	user.IsEmailConfirmed = true
+	err = user.Save()
+	if err != nil {
+		framework.WriteError(w, r, http.StatusInternalServerError, err)
+		return
+	}
+	framework.WriteResponse(w, http.StatusOK, framework.JSONResponse{
+		"success": true,
+		"message": "Email is confirmed",
+	})
 }
 
 func UserLogout(w http.ResponseWriter, r *framework.Request) {

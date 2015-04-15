@@ -33,3 +33,9 @@ echo "Adding logrus sentry hook"
 go get github.com/sirupsen/logrus/hooks/sentry
 echo "Adding mailer"
 go get github.com/jordan-wright/email
+echo "Adding goquery"
+go get github.com/PuerkitoBio/goquery
+echo "Adding now"
+go get github.com/jinzhu/now
+echo "Adding cron"
+go get github.com/robfig/cron

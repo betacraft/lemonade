@@ -9,10 +9,10 @@ echo Cleaning up
 go clean
 echo Running go generate 
 go generate github.com/rainingclouds/lemonades/models
-echo Building Lemonade 
+echo Building Lemonades 
 go vet 
 go get 
-echo Installing Lemonade
+echo Installing Lemonades
 go install
-echo Runnning Lemonade
-lemonade
+echo Runnning Lemonades
+lemonades

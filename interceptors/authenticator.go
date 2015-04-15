@@ -10,17 +10,12 @@ import (
 
 func UserAuthenticate(handler func(http.ResponseWriter, *framework.Request)) http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		sessionKey, err := r.Cookie("lemonades_session_key")
-		if err != nil {
+		sessionKey := r.Header.Get("Session-Key")
+		if sessionKey == "" {
 			framework.WriteError(w, r, http.StatusUnauthorized, errors.New("Illegal request"))
 			return
 		}
-		if sessionKey.Value == "" {
-			framework.WriteError(w, r, http.StatusUnauthorized, errors.New("Illegal request"))
-			return
-		}
-		logger.Debug("Session key is", sessionKey.Value)
-		user, err := models.GetUserBySessionKey(sessionKey.Value)
+		user, err := models.GetUserBySessionKey(sessionKey)
 		if err != nil {
 			logger.Debug("While finding user")
 			framework.WriteError(w, r, http.StatusUnauthorized, err)

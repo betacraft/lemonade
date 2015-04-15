@@ -43,6 +43,7 @@ type User struct {
 	MobileNumber      string `bson:"mobile_number" json:"mobile"`
 	MobileNumberValid bool   `bson:"m_valid" json:"m_valid"`
 	Email             string `bson:"email" json:"email"`
+	IsEmailConfirmed  bool   `bson:"email_confirmed" json:"email_confirmed"`
 	Password          string `bson:"password" json:"-"`
 	ProfilePicLink    string `bson:"profile_pic" json:"profile_pic"`
 

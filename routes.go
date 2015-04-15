@@ -3,6 +3,8 @@ package main
 import (
 	"github.com/go-zoo/bone"
 	"github.com/rainingclouds/lemonades/controllers"
+	"github.com/rainingclouds/lemonades/framework"
+	"github.com/rainingclouds/lemonades/interceptors"
 	"net/http"
 )
 
@@ -14,4 +16,18 @@ func pushRoutes(mux *bone.Mux) {
 	// admin apis
 	mux.Post("/api/v1/admin", http.HandlerFunc(controllers.RegisterAdmin))
 	mux.Post("/api/v1/admin/login", http.HandlerFunc(controllers.AuthenticateAdmin))
+
+	// user apis
+	mux.Options("/api/v1/user", framework.OptionsHandler())
+	mux.Post("/api/v1/user", http.HandlerFunc(controllers.RegisterUser))
+	mux.Options("/api/v1/user/login", framework.OptionsHandler())
+	mux.Post("/api/v1/user/login", http.HandlerFunc(controllers.AuthenticateUser))
+	mux.Options("/api/v1/user/confirm_email/:id", framework.OptionsHandler())
+	// mux.Post("/api/v1/user/confirm_email/:id", )
+	mux.Options("/api/v1/group", framework.OptionsHandler())
+	mux.Post("/api/v1/group", interceptors.UserAuthenticate(controllers.CreateGroup))
+	mux.Options("/api/v1/group/:id", framework.OptionsHandler())
+	mux.Get("/api/v1/group/:id", http.HandlerFunc(controllers.GetGroup))
+	mux.Options("/api/v1/groups", framework.OptionsHandler())
+	mux.Get("/api/v1/groups", http.HandlerFunc(controllers.GetGroups))
 }
