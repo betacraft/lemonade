@@ -55,6 +55,9 @@ type User struct {
 	FacebookAccessToken       string `bson:"fb_token" json:"fb_token"`
 	IsConnectedWithGooglePlus bool   `bson:"is_gplus" json:"is_gplus"`
 
+	CreatedGroupCount int `bson:"created_group_count" json:"created_group_count"`
+	JoinedGroupCount  int `bson:"created_group_count" json:"created_group_count"`
+
 	IsAccessEnabled bool   `bson:"is_access_enabled" json:"is_access_enabled"`
 	Reason          string `bson:"reason" json:"reason"`
 

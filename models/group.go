@@ -30,6 +30,10 @@ func (g *Group) Create() error {
 	return db.MgCreateStrong(C_GROUP, g)
 }
 
+func (g *Group) Update() error {
+	return db.MgUpdateStrong(C_GROUP, g.Id, g)
+}
+
 func GetGroupByProductId(productId bson.ObjectId) (*Group, error) {
 	group := new(Group)
 	err := db.MgFindOneStrong(C_GROUP, &bson.M{"product": bson.M{"_id": productId}}, group)
