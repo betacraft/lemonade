@@ -5,7 +5,7 @@ echo Current GOPATH : $GOPATH
 echo Cleaning up
 go clean
 echo Running go generate 
-go generate github.com/rainingclouds/lemonade/models
+go generate github.com/rainingclouds/lemonades/models
 echo Building lemonade 
 go vet 
 go get 

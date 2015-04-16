@@ -1,7 +1,7 @@
 package framework
 
 import (
-	"github.com/rainingclouds/lemonade/logger"
+	"github.com/rainingclouds/lemonades/logger"
 	"html/template"
 	"net/http"
 	"net/http/httputil"
@@ -20,6 +20,10 @@ func WriteError(w http.ResponseWriter, r *http.Request, c int, err error) {
 	requstDump, _ := httputil.DumpRequest(r, true)
 	logger.Get().Warning(err, "\n", strings.Trim(string(requstDump), "\n\r"))
 	w.Header().Add("Content-Type", "application/json")
+	w.Header().Add("Access-Control-Allow-Origin", "*")
+	w.Header().Add("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
+	w.Header().Add("Access-Control-Allow-Headers",
+		"Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
 	w.WriteHeader(c)
 	res := JSONResponse{"message": err.Error(), "success": false}
 	w.Write(res.ByteArray())
@@ -34,6 +38,10 @@ func WriteHtml(w http.ResponseWriter, tmpl string, data interface{}) {
 
 func WriteResponse(w http.ResponseWriter, c int, r JSONResponse) {
 	w.Header().Add("Content-Type", "application/json")
+	w.Header().Add("Access-Control-Allow-Origin", "*")
+	w.Header().Add("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
+	w.Header().Add("Access-Control-Allow-Headers",
+		"Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, Session-Key")
 	w.WriteHeader(c)
 	w.Write(r.ByteArray())
 }

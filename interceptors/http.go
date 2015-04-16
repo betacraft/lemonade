@@ -2,7 +2,7 @@ package interceptors
 
 import (
 	"github.com/go-zoo/bone"
-	"github.com/rainingclouds/lemonade/logger"
+	"github.com/rainingclouds/lemonades/logger"
 	"github.com/rcrowley/go-metrics"
 	"net/http"
 	"os"
@@ -28,8 +28,8 @@ func (i HttpInterceptor) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	i.gApiCounter.Inc(1)
 	apiTimer := metrics.GetOrRegisterTimer(os.Getenv("ENV")+".api.time", nil)
 	// before
-	logger.Get().Debug("Start => " + r.URL.String())
+	logger.Debug("Start => " + r.URL.String())
 	apiTimer.Time(func() { i.mux.ServeHTTP(w, r) })
 	// after
-	logger.Get().Debug("End => " + r.URL.String())
+	logger.Debug("End => " + r.URL.String())
 }

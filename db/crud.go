@@ -66,5 +66,5 @@ func MgFindAll(c string, find *bson.M, data interface{}) error {
 func MgFindPage(c string, find *bson.M, page int, data interface{}) error {
 	db := GetMongo()
 	defer db.Session.Close()
-	return db.C(c).Find(find).Skip(page * 10).Limit(10).All(data)
+	return db.C(c).Find(find).Skip(page * 9).Limit(9).All(data)
 }

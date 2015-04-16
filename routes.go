@@ -2,8 +2,9 @@ package main
 
 import (
 	"github.com/go-zoo/bone"
-	"github.com/rainingclouds/lemonade/controllers"
-	"github.com/rainingclouds/lemonade/interceptors"
+	"github.com/rainingclouds/lemonades/controllers"
+	"github.com/rainingclouds/lemonades/framework"
+	"github.com/rainingclouds/lemonades/interceptors"
 	"net/http"
 )
 
@@ -11,23 +12,32 @@ import (
 // add all the new routes here
 // the kernel will take care of adding these routes in the routine
 func pushRoutes(mux *bone.Mux) {
-	mux.Get("/", http.HandlerFunc(controllers.Index))
-	mux.Get("/share-widget/:id", http.HandlerFunc(controllers.ShareWidget))
-	mux.Get("/share/:id", http.HandlerFunc(controllers.Share))
-	mux.Get("/dashboard", interceptors.UserAuthenticate(controllers.Dashboard))
-	mux.Get("/deal/:id", http.HandlerFunc(controllers.ShareWidget))
 	// actual apis
 	// admin apis
 	mux.Post("/api/v1/admin", http.HandlerFunc(controllers.RegisterAdmin))
 	mux.Post("/api/v1/admin/login", http.HandlerFunc(controllers.AuthenticateAdmin))
-	// deals apis
-	mux.Post("/api/v1/deals/create", interceptors.AdminAuthenticate(controllers.CreateDeal))
+
 	// user apis
-	mux.Get("/api/v1/user/deals", interceptors.UserAuthenticate(controllers.GetDealsForUser))
-	mux.Get("/api/v1/deal/:id", http.HandlerFunc(controllers.GetDeal))
+	mux.Options("/api/v1/user", framework.OptionsHandler())
 	mux.Post("/api/v1/user", http.HandlerFunc(controllers.RegisterUser))
-	mux.Get("/api/v1/user", interceptors.UserAuthenticate(controllers.GetUser))
-	mux.Post("/api/v1/user/subscribe/:deal_id", interceptors.AdminAuthenticate(controllers.AttachDeal))
+	mux.Options("/api/v1/user/login", framework.OptionsHandler())
 	mux.Post("/api/v1/user/login", http.HandlerFunc(controllers.AuthenticateUser))
+	mux.Options("/api/v1/user/logout", framework.OptionsHandler())
 	mux.Post("/api/v1/user/logout", interceptors.UserAuthenticate(controllers.UserLogout))
+	mux.Options("/api/v1/user/confirm_email/:id", framework.OptionsHandler())
+	mux.Options("/api/v1/user/groups/joined", framework.OptionsHandler())
+	mux.Get("/api/v1/user/groups/joined", interceptors.UserAuthenticate(controllers.GetUserJoinedGroups))
+	mux.Options("/api/v1/user/groups/created", framework.OptionsHandler())
+	mux.Get("/api/v1/user/groups/created", interceptors.UserAuthenticate(controllers.GetUserCreatedGroups))
+
+	// mux.Post("/api/v1/user/confirm_email/:id", )
+	mux.Options("/api/v1/group", framework.OptionsHandler())
+	mux.Post("/api/v1/group", interceptors.UserAuthenticate(controllers.CreateGroup))
+	mux.Options("/api/v1/group/:id/join", framework.OptionsHandler())
+	mux.Post("/api/v1/group/:id/join", interceptors.UserAuthenticate(controllers.JoinGroup))
+
+	mux.Options("/api/v1/group/:id", framework.OptionsHandler())
+	mux.Get("/api/v1/group/:id", http.HandlerFunc(controllers.GetGroup))
+	mux.Options("/api/v1/groups", framework.OptionsHandler())
+	mux.Get("/api/v1/groups", http.HandlerFunc(controllers.GetGroups))
 }

@@ -2,11 +2,10 @@ package main
 
 import (
 	"github.com/go-zoo/bone"
-	"github.com/rainingclouds/lemonade/db"
-	"github.com/rainingclouds/lemonade/framework"
-	"github.com/rainingclouds/lemonade/interceptors"
-	"github.com/rainingclouds/lemonade/logger"
-	"github.com/rainingclouds/lemonade/mailer"
+	"github.com/rainingclouds/lemonades/db"
+	"github.com/rainingclouds/lemonades/interceptors"
+	"github.com/rainingclouds/lemonades/logger"
+	"github.com/rainingclouds/lemonades/mailer"
 	"net/http"
 	"os"
 )
@@ -35,11 +34,6 @@ func main() {
 	logger.Debug("Initializing routes")
 	mux := bone.New()
 	pushRoutes(mux)
-	err = framework.SetTemplate("views/")
-	if err != nil {
-		logger.Panic(err.Error())
-	}
-	mux.Handle("/public/", http.StripPrefix("/public/", http.FileServer(http.Dir("public/"))))
 	logger.Debug("Running server on ", getPort())
 	http.ListenAndServe(getPort(), interceptors.NewInterceptor(mux))
 	logger.Warn("Closing server")
