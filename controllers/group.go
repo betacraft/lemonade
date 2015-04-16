@@ -145,13 +145,11 @@ func GetGroup(w http.ResponseWriter, r *http.Request) {
 	sessionKey := r.Header.Get("Session-Key")
 	if sessionKey != "" {
 		user, err := models.GetUserBySessionKey(sessionKey)
-		if err != nil {
-			framework.WriteError(w, r, http.StatusBadRequest, err)
-			return
-		}
-		for _, id := range group.InterestedUsers {
-			if user.Id.Hex() == id.Hex() {
-				group.IsJoined = true
+		if err == nil {
+			for _, id := range group.InterestedUsers {
+				if user.Id.Hex() == id.Hex() {
+					group.IsJoined = true
+				}
 			}
 		}
 	}
@@ -212,7 +210,9 @@ func CreateGroup(w http.ResponseWriter, r *framework.Request) {
 			"success": true,
 			"group":   group,
 		})
+		return
 	}
+	logger.Debug("Creating new group")
 	group = &models.Group{}
 	if product.PriceValue < 5000 {
 		group.RequiredUserCount = 30

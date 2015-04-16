@@ -42,7 +42,7 @@ func (g *Group) Update() error {
 
 func GetGroupByProductId(productId bson.ObjectId) (*Group, error) {
 	group := new(Group)
-	err := db.MgFindOneStrong(C_GROUP, &bson.M{"product": bson.M{"_id": productId}}, group)
+	err := db.MgFindOneStrong(C_GROUP, &bson.M{"product._id": productId}, group)
 	return group, err
 }
 

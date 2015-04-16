@@ -20,6 +20,7 @@ func pushRoutes(mux *bone.Mux) {
 	// user apis
 	mux.Options("/api/v1/user", framework.OptionsHandler())
 	mux.Post("/api/v1/user", http.HandlerFunc(controllers.RegisterUser))
+	mux.Get("/api/v1/user", interceptors.UserAuthenticate(controllers.GetUser))
 	mux.Options("/api/v1/user/login", framework.OptionsHandler())
 	mux.Post("/api/v1/user/login", http.HandlerFunc(controllers.AuthenticateUser))
 	mux.Options("/api/v1/user/logout", framework.OptionsHandler())

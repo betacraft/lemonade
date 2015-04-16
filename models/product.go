@@ -46,25 +46,21 @@ func (p *Product) Update() error {
 
 func (p *Product) CreateOrUpdate() error {
 	if p.Id.Hex() == "" {
+		log.Println("Creating a new product")
 		return p.Create()
 	}
 	return p.Update()
 }
 
 func GetProductByProductLink(link string) (*Product, error) {
-	prodcut := new(Product)
-	err := db.MgFindOneStrong(C_PRODUCT, &bson.M{"product_link": link}, prodcut)
-	return prodcut, err
+	log.Println("Finding for", link)
+	product := new(Product)
+	err := db.MgFindOneStrong(C_PRODUCT, &bson.M{"product_link": link}, product)
+	return product, err
 }
 
 func FetchProductInfo(rawurl string) (*Product, error) {
-	product, err := GetProductByProductLink(rawurl)
-	if err != nil && err.Error() != "not found" {
-		return nil, err
-	}
-	if product.Id.Hex() != "" {
-		return product, nil
-	}
+
 	uri, err := url.Parse(rawurl)
 	if err != nil {
 		return nil, err
@@ -74,8 +70,16 @@ func FetchProductInfo(rawurl string) (*Product, error) {
 	case "www.flipkart.com":
 		fallthrough
 	case "flipkart.com":
-		product := new(Product)
-		product.ProductLink = rawurl
+		product, err := GetProductByProductLink(strings.Split(rawurl, "?")[0])
+		if err != nil && err.Error() != "not found" {
+			return nil, err
+		}
+		log.Println(product)
+		if product.Id.Hex() != "" {
+			return product, nil
+		}
+		product = new(Product)
+		product.ProductLink = strings.Split(rawurl, "?")[0]
 		doc, err := goquery.NewDocument(rawurl)
 		if err != nil {
 			return nil, err
@@ -127,8 +131,46 @@ func FetchProductInfo(rawurl string) (*Product, error) {
 			}
 		})
 		return product, nil
+	case "www.amazon.in":
+		fallthrough
+	case "amazon.in":
+		product, err := GetProductByProductLink(strings.Split(rawurl, "/ref")[0])
+		if err != nil && err.Error() != "not found" {
+			return nil, err
+		}
+		log.Println(product)
+		if product.Id.Hex() != "" {
+			return product, nil
+		}
+		product.ProductLink = strings.Split(rawurl, "/ref")[0]
+		doc, err := goquery.NewDocument(rawurl)
+		if err != nil {
+			return nil, err
+		}
+		doc.Find("#productTitle").Each(func(i int, s *goquery.Selection) {
+			log.Println(s.Text())
+			product.Name = s.Text()
+		})
+		components := strings.Split(strings.Split(rawurl, "/ref")[0], "/")
+		product.ProductImage = "http://images.amazon.com/images/P/" + components[len(components)-1] + ".jpg"
+		log.Println(product.ProductImage)
+		doc.Find("#fbt_item_data").Each(func(i int, s *goquery.Selection) {
+			product.PriceValue, _ = strconv.ParseInt(strings.Split(strings.Split(s.Text(), "buyingPrice\":")[1], ",")[0], 10, 64)
+			product.PriceCurrency = "Rs"
+		})
+		log.Println(fmt.Sprintf("%d Rs", product.PriceValue))
+		doc.Find("#wayfinding-breadcrumbs_feature_div").Children().Children().Children().Children().Each(func(i int, s *goquery.Selection) {
+			log.Println(strings.TrimSpace(s.Text()))
+			switch i {
+			case 1:
+				product.MainCategory = strings.TrimSpace(s.Text())
+			case 2:
+				product.SubCategory = strings.TrimSpace(s.Text())
+			}
+		})
+		return product, nil
 	default:
-		return nil, errors.New("Please use flipkart urls")
+		return nil, errors.New("Please use flipkart/amazon urls")
 	}
 	return nil, nil
 }
