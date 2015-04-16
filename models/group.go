@@ -18,8 +18,12 @@ type Group struct {
 	InterestedUsers      []bson.ObjectId `json:"interested_users" bson:"interested_users"`
 	InterestedUsersCount int64           `json:"interested_users_count" bson:"interested_users_count"`
 
+	RequiredUserCount int64 `json:"required_user_count" bson:"required_user_count"`
+
 	ExpiresOn time.Time `json:"expires_on" bson:"expires_on"`
 	IsOn      bool      `json:"is_on" bson:"is_on"`
+
+	ExpiresIn int64 `json:"expires_in" bson:"-"`
 
 	IsJoined bool `json:"is_joined" bson:"-"`
 
@@ -27,10 +31,12 @@ type Group struct {
 }
 
 func (g *Group) Create() error {
+	g.CreatedAt = time.Now()
 	return db.MgCreateStrong(C_GROUP, g)
 }
 
 func (g *Group) Update() error {
+	g.UpdatedAt = time.Now()
 	return db.MgUpdateStrong(C_GROUP, g.Id, g)
 }
 

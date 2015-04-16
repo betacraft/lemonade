@@ -4,6 +4,7 @@ import (
 	"errors"
 	"github.com/go-zoo/bone"
 	"github.com/rainingclouds/lemonades/framework"
+	"github.com/rainingclouds/lemonades/logger"
 	"github.com/rainingclouds/lemonades/models"
 	"gopkg.in/mgo.v2/bson"
 	"net/http"
@@ -25,11 +26,12 @@ func GetUserJoinedGroups(w http.ResponseWriter, r *framework.Request) {
 		})
 	}
 	var group *models.Group
+	user.JoinedGroups = new([]models.Group)
 	for _, id := range user.JoinedGroupIds[pageNo*9:] {
 		group, err = models.GetGroupById(id)
 		if err != nil {
-			framework.WriteError(w, r.Request, http.StatusInternalServerError, err)
-			return
+			logger.Err("While getting joined groups by user id", user.Id, err)
+			continue
 		}
 		*user.JoinedGroups = append(*(user.JoinedGroups), *group)
 	}
@@ -53,12 +55,13 @@ func GetUserCreatedGroups(w http.ResponseWriter, r *framework.Request) {
 			"created_groups": nil,
 		})
 	}
+	user.CreatedGroups = new([]models.Group)
 	var group *models.Group
 	for _, id := range user.CreatedGroupIds[pageNo*9:] {
 		group, err = models.GetGroupById(id)
 		if err != nil {
-			framework.WriteError(w, r.Request, http.StatusInternalServerError, err)
-			return
+			logger.Err("While getting created groups by user id", user.Id, err)
+			continue
 		}
 		*user.CreatedGroups = append(*(user.CreatedGroups), *group)
 	}
@@ -152,6 +155,11 @@ func GetGroup(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 	}
+
+	if group.ExpiresOn.After(time.Now()) {
+		group.ExpiresIn = int64(group.ExpiresOn.Sub(time.Now()).Hours() / 24)
+	}
+
 	framework.WriteResponse(w, http.StatusOK, framework.JSONResponse{
 		"success": true,
 		"group":   group,
@@ -175,8 +183,9 @@ func CreateGroup(w http.ResponseWriter, r *framework.Request) {
 		framework.WriteError(w, r.Request, http.StatusBadRequest, err)
 		return
 	}
-	if product.PriceValue < 10000 {
-		framework.WriteError(w, r.Request, http.StatusBadRequest, errors.New("Price of the product must be more than 10,000 Rs"))
+	if product.PriceValue == 0 {
+		logger.Err("Could not parse ", val)
+		framework.WriteError(w, r.Request, http.StatusBadRequest, errors.New("We could not parse the page, please retry"))
 		return
 	}
 	has := false
@@ -205,6 +214,21 @@ func CreateGroup(w http.ResponseWriter, r *framework.Request) {
 		})
 	}
 	group = &models.Group{}
+	if product.PriceValue < 5000 {
+		group.RequiredUserCount = 30
+	}
+	if product.PriceValue > 5000 && product.PriceValue < 10000 {
+		group.RequiredUserCount = 20
+	}
+	if product.PriceValue > 10000 && product.PriceValue < 25000 {
+		group.RequiredUserCount = 10
+	}
+	if product.PriceValue > 25000 && product.PriceValue < 75000 {
+		group.RequiredUserCount = 5
+	}
+	if product.PriceValue > 75000 {
+		group.RequiredUserCount = 3
+	}
 	group.Id = bson.NewObjectId()
 	group.CreatedBy = user.Id
 	group.Product = *product
