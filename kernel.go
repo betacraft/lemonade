@@ -11,6 +11,9 @@ import (
 )
 
 func getPort() string {
+	if os.Getenv("ENV") == "prod" {
+		return ":80"
+	}
 	var port = os.Getenv("PORT")
 	// Set a default port if there is nothing in the environment
 	if port == "" {
