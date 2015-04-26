@@ -33,15 +33,21 @@ func pushRoutes(mux *bone.Mux) {
 	mux.Options("/api/v1/user/gplus_login", framework.OptionsHandler())
 	mux.Post("/api/v1/user/gplus_login", http.HandlerFunc(controllers.LoginWithGooglePlus))
 
+	mux.Options("/api/v1/user/forgot_password", framework.OptionsHandler())
+	mux.Post("/api/v1/user/forgot_password", http.HandlerFunc(controllers.ForgotPassword))
+
+	mux.Options("/api/v1/user/:auth_key/confirm_email", framework.OptionsHandler())
+	mux.Post("/api/v1/user/:auth_key/confirm_email", http.HandlerFunc(controllers.ConfirmEmail))
+	mux.Options("/api/v1/user/:auth_key/update_password", framework.OptionsHandler())
+	mux.Post("/api/v1/user/:auth_key/update_password", http.HandlerFunc(controllers.UpdatePassword))
+
 	mux.Options("/api/v1/user/logout", framework.OptionsHandler())
 	mux.Post("/api/v1/user/logout", interceptors.UserAuthenticate(controllers.UserLogout))
-	mux.Options("/api/v1/user/confirm_email/:id", framework.OptionsHandler())
 	mux.Options("/api/v1/user/groups/joined", framework.OptionsHandler())
 	mux.Get("/api/v1/user/groups/joined", interceptors.UserAuthenticate(controllers.GetUserJoinedGroups))
 	mux.Options("/api/v1/user/groups/created", framework.OptionsHandler())
 	mux.Get("/api/v1/user/groups/created", interceptors.UserAuthenticate(controllers.GetUserCreatedGroups))
 
-	// mux.Post("/api/v1/user/confirm_email/:id", )
 	mux.Options("/api/v1/group", framework.OptionsHandler())
 	mux.Post("/api/v1/group", interceptors.UserAuthenticate(controllers.CreateGroup))
 	mux.Options("/api/v1/group/:id/join", framework.OptionsHandler())

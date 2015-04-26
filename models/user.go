@@ -242,6 +242,12 @@ func (u *User) Save() error {
 	return db.MgUpdateStrong(C_USERS, u.Id, u)
 }
 
+func GetUserByEmailId(email string) (*User, error) {
+	user := new(User)
+	err := db.MgFindOneStrong(C_USERS, &bson.M{"email": email}, user)
+	return user, err
+}
+
 func GetUserByFacebookUserId(fbUserId string) (*User, error) {
 	user := new(User)
 	err := db.MgFindOneStrong(C_USERS, &bson.M{"fb_user_id": fbUserId}, user)

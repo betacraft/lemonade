@@ -41,6 +41,9 @@ func RegisterUser(w http.ResponseWriter, r *http.Request) {
 		}
 		mail := email.NewEmail()
 		mail.From = "lemonades@rainingclouds.com"
+		mail.Subject = "Please confirm your email address"
+		mail.Text = []byte("Hello from Lemonades,\nPlease click on the following link to confirm your email address\nhttp://www.lemonades.in/#/user/" + u.AuthKey + "/confirm_email")
+		mailer.Send(u.Email, mail)
 		mail.Subject = fmt.Sprintf("%v requested access to lemonades", u.Name)
 		mail.Text = []byte(fmt.Sprintf("%v is registered, please call him and update the status to akshay@rainingclouds.com", u))
 		mailer.SendToMany([]string{"amit@rainingclouds.com", "akshay@rainingclouds.com"}, mail)
@@ -72,6 +75,7 @@ func LoginWithFacebook(w http.ResponseWriter, r *http.Request) {
 	}
 	if fbUser.Id.Hex() != "" {
 		fbUser.FacebookAccessToken = user.FacebookAccessToken
+		fbUser.IsEmailConfirmed = true
 		err = fbUser.Save()
 		if err != nil {
 			framework.WriteError(w, r, http.StatusInternalServerError, err)
@@ -89,6 +93,7 @@ func LoginWithFacebook(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	// creating user
+	user.IsEmailConfirmed = true
 	err = user.Create()
 	if err != nil {
 		framework.WriteError(w, r, http.StatusBadRequest, err)
@@ -118,6 +123,7 @@ func LoginWithGooglePlus(w http.ResponseWriter, r *http.Request) {
 	}
 	if gPlusUser.Id.Hex() != "" {
 		gPlusUser.GPlusAccessToken = user.GPlusAccessToken
+		gPlusUser.IsEmailConfirmed = true
 		err = gPlusUser.Save()
 		if err != nil {
 			framework.WriteError(w, r, http.StatusInternalServerError, err)
@@ -134,6 +140,7 @@ func LoginWithGooglePlus(w http.ResponseWriter, r *http.Request) {
 		})
 		return
 	}
+	user.IsEmailConfirmed = true
 	// creating user
 	err = user.Create()
 	if err != nil {
@@ -143,6 +150,67 @@ func LoginWithGooglePlus(w http.ResponseWriter, r *http.Request) {
 	framework.WriteResponse(w, http.StatusOK, framework.JSONResponse{"success": true,
 		"user":    user,
 		"message": "User is successfully registered",
+	})
+}
+
+func ForgotPassword(w http.ResponseWriter, r *http.Request) {
+	bodyMap, err := framework.ReadBody(r)
+	if err != nil {
+		framework.WriteError(w, r, http.StatusBadRequest, err)
+		return
+	}
+	emailId, ok := bodyMap["email"].(string)
+	if !ok {
+		framework.WriteError(w, r, http.StatusBadRequest, errors.New("Email is not present"))
+		return
+	}
+	user, err := models.GetUserByEmailId(emailId)
+	if err != nil {
+		framework.WriteError(w, r, http.StatusBadRequest, errors.New("This email id is not registered"))
+		return
+	}
+	go func(user *models.User) {
+		mail := email.NewEmail()
+		mail.From = "lemonades@rainingclouds.com"
+		mail.Subject = "Password reset instructions"
+		mail.Text = []byte("Hello User,\nClick on the link to reset your password:\nhttp://www.lemonades.in/#/user/" + user.AuthKey + "/reset_password")
+		mailer.Send(user.Email, mail)
+	}(user)
+	framework.WriteResponse(w, http.StatusOK, framework.JSONResponse{
+		"success": true,
+		"message": "Reset password instructions are mailed on the registered email Address",
+	})
+}
+
+func UpdatePassword(w http.ResponseWriter, r *http.Request) {
+	authKey := bone.GetValue(r, "auth_key")
+	if authKey == "" {
+		framework.WriteError(w, r, http.StatusBadRequest, errors.New("Illegal request"))
+		return
+	}
+	user, err := models.GetUserByAuthKey(authKey)
+	if err != nil {
+		framework.WriteError(w, r, http.StatusBadRequest, err)
+		return
+	}
+	bodyMap, err := framework.ReadBody(r)
+	if err != nil {
+		framework.WriteError(w, r, http.StatusBadRequest, err)
+		return
+	}
+	password, ok := bodyMap["password"].(string)
+	if !ok {
+		framework.WriteError(w, r, http.StatusBadRequest, errors.New("Illegal request"))
+		return
+	}
+	err = user.UpdatePassword(password)
+	if err != nil {
+		framework.WriteError(w, r, http.StatusInternalServerError, err)
+		return
+	}
+	framework.WriteResponse(w, http.StatusOK, framework.JSONResponse{
+		"success": true,
+		"message": "Password is updated successfully",
 	})
 }
 
@@ -262,7 +330,7 @@ func AuthenticateUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func ConfirmEmail(w http.ResponseWriter, r *http.Request) {
-	user, err := models.GetUserByAuthKey(bone.GetValue(r, "id"))
+	user, err := models.GetUserByAuthKey(bone.GetValue(r, "auth_key"))
 	if err != nil {
 		framework.WriteError(w, r, http.StatusBadRequest, errors.New("You are not yet registered with us"))
 		return
@@ -275,7 +343,7 @@ func ConfirmEmail(w http.ResponseWriter, r *http.Request) {
 	}
 	framework.WriteResponse(w, http.StatusOK, framework.JSONResponse{
 		"success": true,
-		"message": "Email is confirmed",
+		"message": "Your email address is confirmed successfully",
 	})
 }
 
