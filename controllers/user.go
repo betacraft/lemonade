@@ -53,18 +53,41 @@ func RegisterUser(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-func RegisterUserWithFacebook(w http.ResponseWriter, r *http.Request) {
+func LoginWithFacebook(w http.ResponseWriter, r *http.Request) {
 	bodyMap, err := framework.ReadBody(r)
 	if err != nil {
 		framework.WriteError(w, r, http.StatusBadRequest, err)
 		return
 	}
-	user, err := models.CreateFacebookUser(bodyMap)
+	user, err := models.ParseFacebookUser(bodyMap)
 	if err != nil {
 		framework.WriteError(w, r, http.StatusBadRequest, err)
 		return
 	}
-	user.OtpCode = framework.GenerateOtp()
+	// check if he is already registered with facebook
+	fbUser, err := models.GetUserByFacebookUserId(user.FacebookUserId)
+	if err != nil && err.Error() != "not found" {
+		framework.WriteError(w, r, http.StatusBadRequest, err)
+		return
+	}
+	if fbUser.Id.Hex() != "" {
+		fbUser.FacebookAccessToken = user.FacebookAccessToken
+		err = fbUser.Save()
+		if err != nil {
+			framework.WriteError(w, r, http.StatusInternalServerError, err)
+			return
+		}
+		err = fbUser.SocialLogin()
+		if err != nil {
+			framework.WriteError(w, r, http.StatusInternalServerError, err)
+			return
+		}
+		framework.WriteResponse(w, http.StatusOK, framework.JSONResponse{"success": true,
+			"user":    fbUser,
+			"message": "User is successfully logged in",
+		})
+		return
+	}
 	// creating user
 	err = user.Create()
 	if err != nil {
@@ -77,18 +100,40 @@ func RegisterUserWithFacebook(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-func RegisterUserWithGplus(w http.ResponseWriter, r *http.Request) {
+func LoginWithGooglePlus(w http.ResponseWriter, r *http.Request) {
 	bodyMap, err := framework.ReadBody(r)
 	if err != nil {
 		framework.WriteError(w, r, http.StatusBadRequest, err)
 		return
 	}
-	user, err := models.CreateGplusUser(bodyMap)
+	user, err := models.ParseGplusUser(bodyMap)
 	if err != nil {
 		framework.WriteError(w, r, http.StatusBadRequest, err)
 		return
 	}
-	user.OtpCode = framework.GenerateOtp()
+	gPlusUser, err := models.GetUserByGooglePlusUserId(user.GPlusUserId)
+	if err != nil && err.Error() != "not found" {
+		framework.WriteError(w, r, http.StatusBadRequest, err)
+		return
+	}
+	if gPlusUser.Id.Hex() != "" {
+		gPlusUser.GPlusAccessToken = user.GPlusAccessToken
+		err = gPlusUser.Save()
+		if err != nil {
+			framework.WriteError(w, r, http.StatusInternalServerError, err)
+			return
+		}
+		err = gPlusUser.SocialLogin()
+		if err != nil {
+			framework.WriteError(w, r, http.StatusInternalServerError, err)
+			return
+		}
+		framework.WriteResponse(w, http.StatusOK, framework.JSONResponse{"success": true,
+			"user":    gPlusUser,
+			"message": "User is successfully logged in",
+		})
+		return
+	}
 	// creating user
 	err = user.Create()
 	if err != nil {

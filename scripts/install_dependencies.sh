@@ -39,3 +39,5 @@ echo "Adding now"
 go get github.com/jinzhu/now
 echo "Adding cron"
 go get github.com/robfig/cron
+echo "Adding facebook graph API"
+go get github.com/huandu/facebook

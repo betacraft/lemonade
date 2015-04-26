@@ -13,6 +13,9 @@ import (
 // the kernel will take care of adding these routes in the routine
 func pushRoutes(mux *bone.Mux) {
 	// actual apis
+	mux.Get("/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		framework.WriteHtml(w, "index.html", nil)
+	}))
 	// admin apis
 	mux.Post("/api/v1/admin", http.HandlerFunc(controllers.RegisterAdmin))
 	mux.Post("/api/v1/admin/login", http.HandlerFunc(controllers.AuthenticateAdmin))
@@ -23,6 +26,13 @@ func pushRoutes(mux *bone.Mux) {
 	mux.Get("/api/v1/user", interceptors.UserAuthenticate(controllers.GetUser))
 	mux.Options("/api/v1/user/login", framework.OptionsHandler())
 	mux.Post("/api/v1/user/login", http.HandlerFunc(controllers.AuthenticateUser))
+
+	mux.Options("/api/v1/user/fb_login", framework.OptionsHandler())
+	mux.Post("/api/v1/user/fb_login", http.HandlerFunc(controllers.LoginWithFacebook))
+
+	mux.Options("/api/v1/user/gplus_login", framework.OptionsHandler())
+	mux.Post("/api/v1/user/gplus_login", http.HandlerFunc(controllers.LoginWithGooglePlus))
+
 	mux.Options("/api/v1/user/logout", framework.OptionsHandler())
 	mux.Post("/api/v1/user/logout", interceptors.UserAuthenticate(controllers.UserLogout))
 	mux.Options("/api/v1/user/confirm_email/:id", framework.OptionsHandler())

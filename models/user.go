@@ -51,9 +51,16 @@ type User struct {
 
 	Address Address `bson:"address" json:"address"`
 
-	IsConnectedWithFacebook   bool   `bson:"is_fb" json:"is_fb"`
-	FacebookAccessToken       string `bson:"fb_token" json:"fb_token"`
+	Gender string `json:"-" bson:"gender"`
+
+	IsConnectedWithFacebook bool   `bson:"is_fb" json:"is_fb"`
+	FacebookAccessToken     string `bson:"fb_token" json:"-"`
+	FacebookUserId          string `bson:"fb_user_id" json:"-"`
+
 	IsConnectedWithGooglePlus bool   `bson:"is_gplus" json:"is_gplus"`
+	GPlusAccessToken          string `bson:"gplus_token" json:"-"`
+	GPlusCode                 string `bson:"gplus_code" json:"-"`
+	GPlusUserId               string `bson:"gplus_user_id" json:"-"`
 
 	CreatedGroupCount int `bson:"created_group_count" json:"created_group_count"`
 	JoinedGroupCount  int `bson:"joined_group_count" json:"joined_group_count"`
@@ -114,7 +121,7 @@ func CreateUser(userMap map[string]interface{}) (*User, error) {
 	return user, nil
 }
 
-func CreateFacebookUser(userMap map[string]interface{}) (*User, error) {
+func ParseFacebookUser(userMap map[string]interface{}) (*User, error) {
 	user := new(User)
 	var ok bool
 	user.Email, ok = userMap["email"].(string)
@@ -129,18 +136,26 @@ func CreateFacebookUser(userMap map[string]interface{}) (*User, error) {
 	if !ok {
 		return nil, errors.New("Profile pic is not present")
 	}
+	user.Gender, ok = userMap["gender"].(string)
+	if !ok {
+		return nil, errors.New("Illegal Facebook login request")
+	}
 	user.IsConnectedWithFacebook, ok = userMap["is_fb"].(bool)
 	if !ok {
-		return nil, errors.New("Illegal facebook login")
+		return nil, errors.New("Illegal Facebook login request")
+	}
+	user.FacebookUserId, ok = userMap["fb_user_id"].(string)
+	if !ok {
+		return nil, errors.New("Illegal Facebook login request")
 	}
 	user.FacebookAccessToken, ok = userMap["fb_token"].(string)
 	if !ok && user.IsConnectedWithFacebook {
-		return nil, errors.New("Facebook token is not present")
+		return nil, errors.New("Illegal Facebook login request")
 	}
 	return user, nil
 }
 
-func CreateGplusUser(userMap map[string]interface{}) (*User, error) {
+func ParseGplusUser(userMap map[string]interface{}) (*User, error) {
 	user := new(User)
 	var ok bool
 	user.Email, ok = userMap["email"].(string)
@@ -151,13 +166,25 @@ func CreateGplusUser(userMap map[string]interface{}) (*User, error) {
 	if !ok {
 		return nil, errors.New("Name is not present")
 	}
+	user.Gender, ok = userMap["gender"].(string)
+	if !ok {
+		return nil, errors.New("Illegal Google Plus login request")
+	}
 	user.ProfilePicLink, ok = userMap["profile_pic"].(string)
 	if !ok {
-		return nil, errors.New("Profile pic is not present")
+		return nil, errors.New("Illegal Google Plus login request")
+	}
+	user.GPlusUserId, ok = userMap["gplus_user_id"].(string)
+	if !ok {
+		return nil, errors.New("Illegal Google Plus login request")
+	}
+	user.GPlusAccessToken, ok = userMap["gplus_token"].(string)
+	if !ok && user.IsConnectedWithFacebook {
+		return nil, errors.New("Illegal Google Plus login request")
 	}
 	user.IsConnectedWithGooglePlus, ok = userMap["is_gplus"].(bool)
 	if !ok {
-		return nil, errors.New("Illegal Google plus login")
+		return nil, errors.New("Illegal Google Plus login request")
 	}
 	return user, nil
 }
@@ -172,9 +199,14 @@ func (u *User) Create() error {
 	if user.Id != "" {
 		if u.IsConnectedWithFacebook {
 			user.IsConnectedWithFacebook = true
+			user.FacebookAccessToken = u.FacebookAccessToken
+			user.FacebookUserId = u.FacebookUserId
 		}
 		if u.IsConnectedWithGooglePlus {
 			user.IsConnectedWithGooglePlus = true
+			user.GPlusCode = u.GPlusCode
+			user.GPlusAccessToken = u.GPlusAccessToken
+			user.GPlusUserId = u.GPlusUserId
 		}
 		err = user.Save()
 		if err != nil {
@@ -193,6 +225,12 @@ func (u *User) Create() error {
 	if !u.IsConnectedWithGooglePlus && !u.IsConnectedWithFacebook {
 		u.Password = framework.MD5Hash(u.Password)
 	}
+	sessionKey, err := uuid.NewV4()
+	if err != nil {
+		logger.Get().Error(err)
+		return err
+	}
+	u.SessionKey = sessionKey.String()
 	u.CreatedAt = time.Now()
 	u.UpdatedAt = time.Now()
 	return db.MgCreateStrong(C_USERS, u)
@@ -202,6 +240,18 @@ func (u *User) Save() error {
 	u.UpdatedAt = time.Now()
 	logger.Debug("Saving user with id ", u.Id)
 	return db.MgUpdateStrong(C_USERS, u.Id, u)
+}
+
+func GetUserByFacebookUserId(fbUserId string) (*User, error) {
+	user := new(User)
+	err := db.MgFindOneStrong(C_USERS, &bson.M{"fb_user_id": fbUserId}, user)
+	return user, err
+}
+
+func GetUserByGooglePlusUserId(gPlusUserId string) (*User, error) {
+	user := new(User)
+	err := db.MgFindOneStrong(C_USERS, &bson.M{"gplus_user_id": gPlusUserId}, user)
+	return user, err
 }
 
 func GetUserByAuthKey(authKey string) (*User, error) {
@@ -219,6 +269,16 @@ func GetUserBySessionKey(sessionKey string) (*User, error) {
 func (u *User) UpdatePassword(password string) error {
 	hashedPassword := framework.MD5Hash(password)
 	u.Password = hashedPassword
+	return u.Save()
+}
+
+func (u *User) SocialLogin() error {
+	sessionKey, err := uuid.NewV4()
+	if err != nil {
+		logger.Get().Error(err)
+		return err
+	}
+	u.SessionKey = sessionKey.String()
 	return u.Save()
 }
 
