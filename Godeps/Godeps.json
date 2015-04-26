@@ -1,11 +1,20 @@
 {
-	"ImportPath": "github.com/rainingclouds/lemonade",
+	"ImportPath": "github.com/rainingclouds/lemonades",
 	"GoVersion": "go1.4",
 	"Deps": [
+		{
+			"ImportPath": "github.com/PuerkitoBio/goquery",
+			"Comment": "v0.3.2-74-g5203bc0",
+			"Rev": "5203bc06dacf2192e0f4a9879010b9f14c861d14"
+		},
 		{
 			"ImportPath": "github.com/Sirupsen/logrus",
 			"Comment": "v0.7.2-2-ge00ed35",
 			"Rev": "e00ed35f54d331c88f1867a18a7bfc4e4e4685ac"
+		},
+		{
+			"ImportPath": "github.com/andybalholm/cascadia",
+			"Rev": "54abbbf07a45a3ef346ebe903e0715d9a3c19352"
 		},
 		{
 			"ImportPath": "github.com/getsentry/raven-go",
@@ -30,6 +39,10 @@
 		{
 			"ImportPath": "github.com/rcrowley/go-metrics",
 			"Rev": "dee209f2455f101a5e4e593dea94872d2c62d85d"
+		},
+		{
+			"ImportPath": "golang.org/x/net/html",
+			"Rev": "84ba27dd5b2d8135e9da1395277f2c9333a2ffda"
 		},
 		{
 			"ImportPath": "gopkg.in/mgo.v2",
