@@ -91,6 +91,9 @@ func JoinGroup(w http.ResponseWriter, r *framework.Request) {
 	}
 	group.InterestedUsersCount = group.InterestedUsersCount + 1
 	group.InterestedUsers = append(group.InterestedUsers, user.Id)
+	if group.InterestedUsersCount >= group.RequiredUserCount {
+		group.ReachedGoalOn = time.Now()
+	}
 	err = group.Update()
 	if err != nil {
 		framework.WriteError(w, r.Request, http.StatusInternalServerError, err)
@@ -103,6 +106,7 @@ func JoinGroup(w http.ResponseWriter, r *framework.Request) {
 		framework.WriteError(w, r.Request, http.StatusInternalServerError, err)
 		return
 	}
+	group.ReachedGoal = int64(time.Now().Sub(group.ReachedGoalOn).Hours() / 24)
 	group.IsJoined = true
 	framework.WriteResponse(w, http.StatusOK, framework.JSONResponse{
 		"success": true,
@@ -156,6 +160,9 @@ func GetGroup(w http.ResponseWriter, r *http.Request) {
 
 	if group.ExpiresOn.After(time.Now()) {
 		group.ExpiresIn = int64(group.ExpiresOn.Sub(time.Now()).Hours() / 24)
+	}
+	if group.InterestedUsersCount >= group.RequiredUserCount {
+		group.ReachedGoal = int64(time.Now().Sub(group.ReachedGoalOn).Hours() / 24)
 	}
 
 	framework.WriteResponse(w, http.StatusOK, framework.JSONResponse{

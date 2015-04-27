@@ -20,6 +20,9 @@ type Group struct {
 
 	RequiredUserCount int64 `json:"required_user_count" bson:"required_user_count"`
 
+	ReachedGoalOn time.Time `json:"-" bson:"reached_goal_on"`
+	ReachedGoal   int64     `json:"reached_goal" bson:"-"`
+
 	ExpiresOn time.Time `json:"expires_on" bson:"expires_on"`
 	IsOn      bool      `json:"is_on" bson:"is_on"`
 
