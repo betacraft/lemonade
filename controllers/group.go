@@ -2,9 +2,12 @@ package controllers
 
 import (
 	"errors"
+	"fmt"
 	"github.com/go-zoo/bone"
+	"github.com/jordan-wright/email"
 	"github.com/rainingclouds/lemonades/framework"
 	"github.com/rainingclouds/lemonades/logger"
+	"github.com/rainingclouds/lemonades/mailer"
 	"github.com/rainingclouds/lemonades/models"
 	"gopkg.in/mgo.v2/bson"
 	"net/http"
@@ -93,6 +96,15 @@ func JoinGroup(w http.ResponseWriter, r *framework.Request) {
 	group.InterestedUsers = append(group.InterestedUsers, user.Id)
 	if group.InterestedUsersCount >= group.RequiredUserCount {
 		group.ReachedGoalOn = time.Now()
+		group.ReachedGoal = int64(time.Now().Sub(group.ReachedGoalOn).Hours() / 24)
+		// send email notification to akshay
+		go func(group *models.Group) {
+			mail := email.NewEmail()
+			mail.From = "lemonades@rainingclouds.com"
+			mail.Subject = "Start getting deal for " + group.Product.Name
+			mail.Text = []byte("Group " + group.Id.Hex() + " is done with its expected users\n" + fmt.Sprintf("%v", group))
+			mailer.Send("akshay@rainingclouds.com", mail)
+		}(group)
 	}
 	err = group.Update()
 	if err != nil {
@@ -106,7 +118,6 @@ func JoinGroup(w http.ResponseWriter, r *framework.Request) {
 		framework.WriteError(w, r.Request, http.StatusInternalServerError, err)
 		return
 	}
-	group.ReachedGoal = int64(time.Now().Sub(group.ReachedGoalOn).Hours() / 24)
 	group.IsJoined = true
 	framework.WriteResponse(w, http.StatusOK, framework.JSONResponse{
 		"success": true,
