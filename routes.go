@@ -12,13 +12,10 @@ import (
 // add all the new routes here
 // the kernel will take care of adding these routes in the routine
 func pushRoutes(mux *bone.Mux) {
-	// actual apis
-	mux.Get("/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		framework.WriteHtml(w, "index.html", nil)
-	}))
 	// admin apis
 	mux.Post("/api/v1/admin", http.HandlerFunc(controllers.RegisterAdmin))
 	mux.Post("/api/v1/admin/login", http.HandlerFunc(controllers.AuthenticateAdmin))
+	mux.Post("/api/v1/admin/group", interceptors.AdminAuthenticate(controllers.AdminCreateGroup))
 
 	// user apis
 	mux.Options("/api/v1/user", framework.OptionsHandler())

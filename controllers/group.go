@@ -215,19 +215,19 @@ func CreateGroup(w http.ResponseWriter, r *framework.Request) {
 	logger.Debug("Creating new group")
 	group = &models.Group{}
 	if product.PriceValue < 5000 {
-		group.RequiredUserCount = 30
+		group.RequiredUserCount = 40
 	}
 	if product.PriceValue > 5000 && product.PriceValue < 10000 {
-		group.RequiredUserCount = 20
+		group.RequiredUserCount = 25
 	}
 	if product.PriceValue > 10000 && product.PriceValue < 25000 {
-		group.RequiredUserCount = 10
+		group.RequiredUserCount = 15
 	}
 	if product.PriceValue > 25000 && product.PriceValue < 75000 {
-		group.RequiredUserCount = 5
+		group.RequiredUserCount = 10
 	}
 	if product.PriceValue > 75000 {
-		group.RequiredUserCount = 3
+		group.RequiredUserCount = 7
 	}
 	group.Id = bson.NewObjectId()
 	group.CreatedBy = user.Id
@@ -244,6 +244,88 @@ func CreateGroup(w http.ResponseWriter, r *framework.Request) {
 	user.CreatedGroupCount = user.CreatedGroupCount + 1
 	user.CreatedGroupIds = append(user.CreatedGroupIds, group.Id)
 	err = user.Save()
+	if err != nil {
+		framework.WriteError(w, r.Request, http.StatusInternalServerError, err)
+		return
+	}
+	framework.WriteResponse(w, http.StatusOK, framework.JSONResponse{
+		"success": true,
+		"group":   group,
+	})
+}
+
+func AdminCreateGroup(w http.ResponseWriter, r *framework.Request) {
+	admin := r.MustGet("admin").(*models.Admin)
+	bodyMap, err := framework.ReadBody(r.Request)
+	if err != nil {
+		framework.WriteError(w, r.Request, http.StatusBadRequest, err)
+		return
+	}
+	val, ok := bodyMap["product_link"].(string)
+	if !ok {
+		framework.WriteError(w, r.Request, http.StatusBadRequest, errors.New("Product link is not present"))
+		return
+	}
+	product, err := models.FetchProductInfo(val)
+	if err != nil {
+		framework.WriteError(w, r.Request, http.StatusBadRequest, err)
+		return
+	}
+	if product.PriceValue == 0 {
+		logger.Err("Could not parse ", val)
+		framework.WriteError(w, r.Request, http.StatusBadRequest, errors.New("We could not parse the page, please retry"))
+		return
+	}
+	has := false
+	for _, id := range product.AddedBy {
+		if admin.Id.Hex() == id.Hex() {
+			has = true
+		}
+	}
+	if !has {
+		product.AddedBy = append(product.AddedBy, admin.Id)
+	}
+	err = product.CreateOrUpdate()
+	if err != nil {
+		framework.WriteError(w, r.Request, http.StatusInternalServerError, err)
+		return
+	}
+	group, err := models.GetGroupByProductId(product.Id)
+	if err != nil && err.Error() != "not found" {
+		framework.WriteError(w, r.Request, http.StatusInternalServerError, err)
+		return
+	}
+	if group.Id.Hex() != "" {
+		framework.WriteResponse(w, http.StatusOK, framework.JSONResponse{
+			"success": true,
+			"group":   group,
+		})
+		return
+	}
+	logger.Debug("Creating new group")
+	group = &models.Group{}
+	if product.PriceValue < 5000 {
+		group.RequiredUserCount = 40
+	}
+	if product.PriceValue > 5000 && product.PriceValue < 10000 {
+		group.RequiredUserCount = 25
+	}
+	if product.PriceValue > 10000 && product.PriceValue < 25000 {
+		group.RequiredUserCount = 15
+	}
+	if product.PriceValue > 25000 && product.PriceValue < 75000 {
+		group.RequiredUserCount = 10
+	}
+	if product.PriceValue > 75000 {
+		group.RequiredUserCount = 7
+	}
+	group.Id = bson.NewObjectId()
+	group.CreatedBy = admin.Id
+	group.Product = *product
+	group.ExpiresOn = time.Now().Add(time.Hour * 24 * 30)
+	group.IsOn = true
+	group.InterestedUsersCount = 0
+	err = group.Create()
 	if err != nil {
 		framework.WriteError(w, r.Request, http.StatusInternalServerError, err)
 		return

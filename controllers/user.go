@@ -318,10 +318,6 @@ func AuthenticateUser(w http.ResponseWriter, r *http.Request) {
 		framework.WriteError(w, r, http.StatusUnauthorized, err)
 		return
 	}
-	if !user.IsAccessEnabled {
-		framework.WriteError(w, r, http.StatusBadRequest, errors.New("Your access is still not approved"))
-		return
-	}
 	framework.WriteResponse(w, http.StatusOK,
 		framework.JSONResponse{"success": true,
 			"user":    user,

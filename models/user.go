@@ -104,14 +104,6 @@ func CreateUser(userMap map[string]interface{}) (*User, error) {
 	if !ok {
 		return nil, errors.New("Email is not present")
 	}
-	user.MobileNumber, ok = userMap["mobile"].(string)
-	if !ok {
-		return nil, errors.New("Mobile is not present")
-	}
-	user.Name, ok = userMap["name"].(string)
-	if !ok {
-		return nil, errors.New("Name is not present")
-	}
 	user.Password, ok = userMap["password"].(string)
 	if !ok {
 		return nil, errors.New("Password is not present")
