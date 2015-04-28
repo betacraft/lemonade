@@ -118,6 +118,9 @@ func JoinGroup(w http.ResponseWriter, r *framework.Request) {
 		framework.WriteError(w, r.Request, http.StatusInternalServerError, err)
 		return
 	}
+	if group.ExpiresOn.After(time.Now()) {
+		group.ExpiresIn = int64(group.ExpiresOn.Sub(time.Now()).Hours() / 24)
+	}
 	group.IsJoined = true
 	framework.WriteResponse(w, http.StatusOK, framework.JSONResponse{
 		"success": true,
