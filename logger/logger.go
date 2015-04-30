@@ -2,9 +2,9 @@ package logger
 
 import (
 	"github.com/Sirupsen/logrus"
-	"github.com/Sirupsen/logrus/hooks/sentry"
+	// "github.com/Sirupsen/logrus/hooks/sentry"
 	"os"
-	"time"
+	// "time"
 )
 
 var log *logrus.Logger
@@ -18,18 +18,18 @@ func Init() {
 	if os.Getenv("ENV") == "dev" {
 		return
 	}
-	hook, err := logrus_sentry.NewSentryHook(dsn, []logrus.Level{
-		logrus.PanicLevel,
-		logrus.FatalLevel,
-		logrus.ErrorLevel,
-		logrus.WarnLevel,
-	})
-	hook.Timeout = 20 * time.Second
-	if err != nil {
-		logrus.Panic(err)
-	}
-	log.Debug("Adding sentry hook")
-	log.Hooks.Add(hook)
+	// hook, err := logrus_sentry.NewSentryHook(dsn, []logrus.Level{
+	// 	logrus.PanicLevel,
+	// 	logrus.FatalLevel,
+	// 	logrus.ErrorLevel,
+	// 	logrus.WarnLevel,
+	// })
+	// hook.Timeout = 20 * time.Second
+	// if err != nil {
+	// 	logrus.Panic(err)
+	// }
+	// log.Debug("Adding sentry hook")
+	// log.Hooks.Add(hook)
 }
 
 func Get() *logrus.Logger {
