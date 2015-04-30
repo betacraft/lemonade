@@ -108,7 +108,7 @@ func FetchProductInfo(rawurl string) (*Product, error) {
 		})
 		doc.Find(".seller-table-wrap").Each(func(i int, s *goquery.Selection) {
 			dataConfig, ok := s.Attr("data-config")
-			if ok {
+			if ok && strings.Contains(dataConfig, "sellingPrice") {
 				product.PriceValue, _ = strconv.ParseInt(strings.Split(strings.Split(dataConfig, "\"sellingPrice\":")[1], ",")[0], 10, 64)
 			}
 		})

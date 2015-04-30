@@ -193,23 +193,7 @@ func (u *User) Create() error {
 		return err
 	}
 	if user.Id != "" {
-		if u.IsConnectedWithFacebook {
-			user.IsConnectedWithFacebook = true
-			user.FacebookAccessToken = u.FacebookAccessToken
-			user.FacebookUserId = u.FacebookUserId
-		}
-		if u.IsConnectedWithGooglePlus {
-			user.IsConnectedWithGooglePlus = true
-			user.GPlusCode = u.GPlusCode
-			user.GPlusAccessToken = u.GPlusAccessToken
-			user.GPlusUserId = u.GPlusUserId
-		}
-		err = user.Save()
-		if err != nil {
-			return err
-		}
-		*u = *user
-		return nil
+		return errors.New("You are already registered with Lemonades")
 	}
 	authKey, err := uuid.NewV4()
 	if err != nil {
