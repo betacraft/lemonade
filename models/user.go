@@ -108,6 +108,10 @@ func CreateUser(userMap map[string]interface{}) (*User, error) {
 	if !ok {
 		return nil, errors.New("Password is not present")
 	}
+	user.MobileNumber, ok = userMap["mobile_number"].(string)
+	if !ok {
+		return nil, errors.New("Mobile number is not present")
+	}
 	user.IsConnectedWithGooglePlus = false
 	user.IsConnectedWithFacebook = false
 	return user, nil
