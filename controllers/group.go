@@ -76,6 +76,57 @@ func GetUserCreatedGroups(w http.ResponseWriter, r *framework.Request) {
 
 }
 
+func LeaveGroup(w http.ResponseWriter, r *framework.Request) {
+	user := r.MustGet("user").(*models.User)
+	idString := bone.GetValue(r.Request, "id")
+	if idString == "" {
+		framework.WriteError(w, r.Request, http.StatusBadRequest, errors.New("Illegal group id"))
+		return
+	}
+	id := bson.ObjectIdHex(idString)
+	if !id.Valid() {
+		framework.WriteError(w, r.Request, http.StatusBadRequest, errors.New("Illegal group id"))
+	}
+	group, err := models.GetGroupById(id)
+	if err != nil {
+		framework.WriteError(w, r.Request, http.StatusInternalServerError, err)
+		return
+	}
+	group.InterestedUsersCount = group.InterestedUsersCount - 1
+	// removing that user from interested count
+	for i := 0; i < len(group.InterestedUsers); i++ {
+		if group.InterestedUsers[i].Hex() == user.Id.Hex() {
+			group.InterestedUsers = append(group.InterestedUsers[:i], group.InterestedUsers[i+1:]...)
+			break
+		}
+	}
+	err = group.Update()
+	if err != nil {
+		framework.WriteError(w, r.Request, http.StatusInternalServerError, err)
+		return
+	}
+	user.JoinedGroupCount = user.JoinedGroupCount - 1
+	for i := 0; i < len(user.JoinedGroupIds); i++ {
+		if user.JoinedGroupIds[i].Hex() == group.Id.Hex() {
+			user.JoinedGroupIds = append(user.JoinedGroupIds[:i], user.JoinedGroupIds[i+1:]...)
+			break
+		}
+	}
+	err = user.Save()
+	if err != nil {
+		framework.WriteError(w, r.Request, http.StatusInternalServerError, err)
+		return
+	}
+	if group.ExpiresOn.After(time.Now()) {
+		group.ExpiresIn = int64(group.ExpiresOn.Sub(time.Now()).Hours() / 24)
+	}
+	group.IsJoined = false
+	framework.WriteResponse(w, http.StatusOK, framework.JSONResponse{
+		"success": true,
+		"group":   group,
+	})
+}
+
 func JoinGroup(w http.ResponseWriter, r *framework.Request) {
 	user := r.MustGet("user").(*models.User)
 	idString := bone.GetValue(r.Request, "id")
@@ -251,6 +302,7 @@ func CreateGroup(w http.ResponseWriter, r *framework.Request) {
 		group.RequiredUserCount = 7
 	}
 	group.Id = bson.NewObjectId()
+	group.MinDiscount = "1% Off"
 	group.CreatedBy = user.Id
 	group.Product = *product
 	group.ExpiresOn = time.Now().Add(time.Hour * 24 * 30)

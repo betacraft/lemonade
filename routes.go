@@ -50,6 +50,9 @@ func pushRoutes(mux *bone.Mux) {
 	mux.Options("/api/v1/group/:id/join", framework.OptionsHandler())
 	mux.Post("/api/v1/group/:id/join", interceptors.UserAuthenticate(controllers.JoinGroup))
 
+	mux.Options("/api/v1/group/:id/leave", framework.OptionsHandler())
+	mux.Post("/api/v1/group/:id/leave", interceptors.UserAuthenticate(controllers.LeaveGroup))
+
 	mux.Options("/api/v1/group/:id", framework.OptionsHandler())
 	mux.Get("/api/v1/group/:id", http.HandlerFunc(controllers.GetGroup))
 	mux.Options("/api/v1/groups", framework.OptionsHandler())
