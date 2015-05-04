@@ -60,7 +60,6 @@ func GetProductByProductLink(link string) (*Product, error) {
 }
 
 func FetchProductInfo(rawurl string) (*Product, error) {
-
 	uri, err := url.Parse(rawurl)
 	if err != nil {
 		return nil, err

@@ -18,18 +18,6 @@ func Init() {
 	if os.Getenv("ENV") == "dev" {
 		return
 	}
-	// hook, err := logrus_sentry.NewSentryHook(dsn, []logrus.Level{
-	// 	logrus.PanicLevel,
-	// 	logrus.FatalLevel,
-	// 	logrus.ErrorLevel,
-	// 	logrus.WarnLevel,
-	// })
-	// hook.Timeout = 20 * time.Second
-	// if err != nil {
-	// 	logrus.Panic(err)
-	// }
-	// log.Debug("Adding sentry hook")
-	// log.Hooks.Add(hook)
 }
 
 func Get() *logrus.Logger {

@@ -302,7 +302,7 @@ func CreateGroup(w http.ResponseWriter, r *framework.Request) {
 		group.RequiredUserCount = 7
 	}
 	group.Id = bson.NewObjectId()
-	group.MinDiscount = "1% Off"
+	group.MinDiscount = "10% Off"
 	group.CreatedBy = user.Id
 	group.Product = *product
 	group.ExpiresOn = time.Now().Add(time.Hour * 24 * 30)
