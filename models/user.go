@@ -268,6 +268,16 @@ func (u *User) SocialLogin() error {
 	return u.Save()
 }
 
+func (u *User) RenewSessionKey() error {
+	sessionKey, err := uuid.NewV4()
+	if err != nil {
+		logger.Get().Error(err)
+		return err
+	}
+	u.SessionKey = sessionKey.String()
+	return u.Save()
+}
+
 func (u *User) AuthenticateUser() error {
 	logger.Get().Debug(u.Password)
 	hashedPassword := framework.MD5Hash(u.Password)

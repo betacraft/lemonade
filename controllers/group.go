@@ -143,6 +143,17 @@ func JoinGroup(w http.ResponseWriter, r *framework.Request) {
 		framework.WriteError(w, r.Request, http.StatusInternalServerError, err)
 		return
 	}
+	for _, userId := range group.InterestedUsers {
+		if userId.Hex() == user.Id.Hex() {
+			group.IsJoined = true
+			framework.WriteResponse(w, http.StatusOK, framework.JSONResponse{
+				"success": true,
+				"group":   group,
+				"message": "Successfully Joined the group",
+			})
+			return
+		}
+	}
 	group.InterestedUsersCount = group.InterestedUsersCount + 1
 	group.InterestedUsers = append(group.InterestedUsers, user.Id)
 	if group.InterestedUsersCount >= group.RequiredUserCount {
@@ -270,6 +281,10 @@ func CreateGroup(w http.ResponseWriter, r *framework.Request) {
 	err = product.CreateOrUpdate()
 	if err != nil {
 		framework.WriteError(w, r.Request, http.StatusInternalServerError, err)
+		return
+	}
+	if product.PriceValue < 1000 {
+		framework.WriteError(w, r.Request, http.StatusBadRequest, errors.New("Minimum cost of the product should be more than 1000 Rs"))
 		return
 	}
 	group, err := models.GetGroupByProductId(product.Id)

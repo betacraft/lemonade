@@ -59,6 +59,6 @@ func GetGroupById(id bson.ObjectId) (*Group, error) {
 
 func GetGroups(pageNo int) (*[]Group, error) {
 	groups := new([]Group)
-	err := db.MgFindPage(C_GROUP, &bson.M{"is_on": true}, pageNo, groups)
+	err := db.MgFindPageSort(C_GROUP, &bson.M{"is_on": true}, "-interested_users_count", pageNo, groups)
 	return groups, err
 }

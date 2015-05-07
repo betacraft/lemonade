@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/go-zoo/bone"
 	"github.com/jordan-wright/email"
+	"github.com/rainingclouds/lemonades/captcha"
 	"github.com/rainingclouds/lemonades/framework"
 	"github.com/rainingclouds/lemonades/logger"
 	"github.com/rainingclouds/lemonades/mailer"
@@ -25,6 +26,15 @@ func RegisterUser(w http.ResponseWriter, r *http.Request) {
 		framework.WriteError(w, r, http.StatusBadRequest, err)
 		return
 	}
+	response, ok := bodyMap["captcha"].(string)
+	if !ok {
+		framework.WriteError(w, r, http.StatusBadRequest, errors.New("Illegal Request"))
+		return
+	}
+	if !captcha.Validate(response) {
+		framework.WriteError(w, r, http.StatusBadRequest, errors.New("Illegal Request"))
+		return
+	}
 	user.OtpCode = framework.GenerateOtp()
 	user.IsAccessEnabled = false
 	// creating user
@@ -42,7 +52,7 @@ func RegisterUser(w http.ResponseWriter, r *http.Request) {
 		mail := email.NewEmail()
 		mail.From = "lemonades@rainingclouds.com"
 		mail.Subject = "Please confirm your email address"
-		mail.Text = []byte("Hello from Lemonades,\nPlease click on the following link to confirm your email address\nhttp://www.lemonades.in/#/user/" + u.AuthKey + "/confirm_email")
+		mail.Text = []byte("Hello from Lemonades,\nPlease click on the following link to confirm your email address\nhttp://www.lemonades.in/#!/user/" + u.AuthKey + "/confirm_email")
 		mailer.Send(u.Email, mail)
 		mail.Subject = fmt.Sprintf("%v requested access to lemonades", u.Name)
 		mail.Text = []byte(fmt.Sprintf("%v is registered, please call him and update the status to akshay@rainingclouds.com", u))
@@ -173,7 +183,7 @@ func ForgotPassword(w http.ResponseWriter, r *http.Request) {
 		mail := email.NewEmail()
 		mail.From = "lemonades@rainingclouds.com"
 		mail.Subject = "Password reset instructions"
-		mail.Text = []byte("Hello User,\nClick on the link to reset your password:\nhttp://www.lemonades.in/#/user/" + user.AuthKey + "/reset_password")
+		mail.Text = []byte("Hello User,\nClick on the link to reset your password:\nhttp://www.lemonades.in/#!/user/" + user.AuthKey + "/reset_password")
 		mailer.Send(user.Email, mail)
 	}(user)
 	framework.WriteResponse(w, http.StatusOK, framework.JSONResponse{
@@ -208,8 +218,14 @@ func UpdatePassword(w http.ResponseWriter, r *http.Request) {
 		framework.WriteError(w, r, http.StatusInternalServerError, err)
 		return
 	}
+	err = user.RenewSessionKey()
+	if err != nil {
+		framework.WriteError(w, r, http.StatusInternalServerError, err)
+		return
+	}
 	framework.WriteResponse(w, http.StatusOK, framework.JSONResponse{
 		"success": true,
+		"user":    user,
 		"message": "Password is updated successfully",
 	})
 }
