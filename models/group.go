@@ -2,6 +2,7 @@ package models
 
 import (
 	"github.com/rainingclouds/lemonades/db"
+	"github.com/rainingclouds/lemonades/logger"
 	"gopkg.in/mgo.v2/bson"
 	"time"
 )
@@ -43,6 +44,22 @@ func (g *Group) Create() error {
 func (g *Group) Update() error {
 	g.UpdatedAt = time.Now()
 	return db.MgUpdateStrong(C_GROUP, g.Id, g)
+}
+
+func UpdateProductInfo(p *Product) error {
+	groups := new([]Group)
+	err := db.MgFindAll(C_GROUP, &bson.M{"product._id": p.Id, "is_on": true}, groups)
+	if err != nil {
+		return err
+	}
+	for i := 0; i < len(*groups); i++ {
+		(*groups)[i].Product = *p
+		err = (*groups)[i].Update()
+		if err != nil {
+			logger.Err("Error while updating group product info", err)
+		}
+	}
+	return nil
 }
 
 func GetGroupByProductId(productId bson.ObjectId) (*Group, error) {

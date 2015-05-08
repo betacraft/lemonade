@@ -78,7 +78,11 @@ func (p *Product) UpdatePrice() error {
 	}
 	p.PriceHistory = append(p.PriceHistory, *price)
 	p.PriceValue = price.PriceValue
-	return p.Update()
+	err = p.Update()
+	if err != nil {
+		return err
+	}
+	return UpdateProductInfo(p)
 }
 
 func (p *Product) Create() error {
@@ -158,6 +162,7 @@ func FetchProductPrice(rawUrl string) (*Price, error) {
 		if err != nil && err.Error() != "not found" {
 			return nil, err
 		}
+		log.Printf("Fething info")
 		doc.Find("#fbt_item_data").Each(func(i int, s *goquery.Selection) {
 			priceValue, _ = strconv.ParseInt(strings.Split(strings.Split(s.Text(), "buyingPrice\":")[1], ",")[0], 10, 64)
 		})

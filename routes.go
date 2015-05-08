@@ -59,4 +59,7 @@ func pushRoutes(mux *bone.Mux) {
 	mux.Get("/api/v1/group/:id", http.HandlerFunc(controllers.GetGroup))
 	mux.Options("/api/v1/groups", framework.OptionsHandler())
 	mux.Get("/api/v1/groups", http.HandlerFunc(controllers.GetGroups))
+
+	mux.Options("/api/v1/product/:id/update_price", framework.OptionsHandler())
+	mux.Post("/api/v1/product/:id/update_price", http.HandlerFunc(controllers.UpdateProductPrice))
 }
