@@ -6,9 +6,20 @@ import (
 	"github.com/rainingclouds/lemonades/interceptors"
 	"github.com/rainingclouds/lemonades/logger"
 	"github.com/rainingclouds/lemonades/mailer"
+	"github.com/rainingclouds/lemonades/models"
+	"github.com/robfig/cron"
 	"net/http"
 	"os"
 )
+
+var c *cron.Cron
+
+func startCronJobs() {
+	logger.Debug("Starting the cron job")
+	c = cron.New()
+	c.AddFunc("@midnight", models.UpdateProductPrices)
+	c.Start()
+}
 
 func getPort() string {
 	if os.Getenv("ENV") == "prod" {
@@ -38,7 +49,7 @@ func main() {
 	mux := bone.New()
 	pushRoutes(mux)
 	logger.Debug("Running server on ", getPort())
-	mux.Handle("/public/", http.StripPrefix("/public/", http.FileServer(http.Dir("public/"))))
+	startCronJobs()
 	http.ListenAndServe(getPort(), interceptors.NewInterceptor(mux))
 	logger.Warn("Closing server")
 }

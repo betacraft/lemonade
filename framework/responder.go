@@ -1,6 +1,7 @@
 package framework
 
 import (
+	"fmt"
 	"github.com/rainingclouds/lemonades/logger"
 	"html/template"
 	"net/http"
@@ -34,6 +35,16 @@ func WriteHtml(w http.ResponseWriter, tmpl string, data interface{}) {
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
+}
+
+func WriteText(w http.ResponseWriter, text string) {
+	w.Header().Add("Content-Type", "text/html")
+	w.Header().Add("Access-Control-Allow-Origin", "*")
+	w.Header().Add("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
+	w.Header().Add("Access-Control-Allow-Headers",
+		"Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, Session-Key")
+	w.WriteHeader(200)
+	fmt.Fprint(w, text)
 }
 
 func WriteResponse(w http.ResponseWriter, c int, r JSONResponse) {

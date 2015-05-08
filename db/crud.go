@@ -21,7 +21,7 @@ func MgCreateStrong(c string, data interface{}) error {
 func MgFindPageSort(c string, find *bson.M, sort string, page int, data interface{}) error {
 	db := GetMongo()
 	defer db.Session.Close()
-	return db.C(c).Find(find).Sort(sort).Skip(page * 10).Limit(10).All(data)
+	return db.C(c).Find(find).Sort(sort).Skip(page * 9).Limit(9).All(data)
 }
 
 func MgUpdate(c string, id bson.ObjectId, data interface{}) error {

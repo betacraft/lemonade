@@ -12,6 +12,8 @@ import (
 // add all the new routes here
 // the kernel will take care of adding these routes in the routine
 func pushRoutes(mux *bone.Mux) {
+	// global urls
+	mux.Get("/api/v1/group/:id/share", http.HandlerFunc(controllers.ShareGroup))
 	// admin apis
 	mux.Post("/api/v1/admin", http.HandlerFunc(controllers.RegisterAdmin))
 	mux.Post("/api/v1/admin/login", http.HandlerFunc(controllers.AuthenticateAdmin))

@@ -76,6 +76,33 @@ func GetUserCreatedGroups(w http.ResponseWriter, r *framework.Request) {
 
 }
 
+func ShareGroup(w http.ResponseWriter, r *http.Request) {
+	idString := bone.GetValue(r, "id")
+	if idString == "" {
+		framework.WriteError(w, r, http.StatusBadRequest, errors.New("Illegal group id"))
+		return
+	}
+	id := bson.ObjectIdHex(idString)
+	if !id.Valid() {
+		framework.WriteError(w, r, http.StatusBadRequest, errors.New("Illegal group id"))
+	}
+	group, err := models.GetGroupById(id)
+	if err != nil {
+		framework.WriteError(w, r, http.StatusInternalServerError, err)
+		return
+	}
+	var groupText string
+	switch group.InterestedUsersCount {
+	case 0:
+		groupText = fmt.Sprintf("Join with a group of people to buy %v with a huge group buying discount on Lemonades.in", group.Product.Name)
+	case 1:
+		groupText = fmt.Sprintf("1 person is interested in buying %v. Join him on Lemonades.in and get huge group discount.", group.Product.Name)
+	default:
+		groupText = fmt.Sprintf("%v people is interested in buying %v. Join them on Lemonades.in and get huge group discount.", group.InterestedUsersCount, group.Product.Name)
+	}
+	framework.WriteText(w, fmt.Sprintf("<!DOCTYPE html><html><head><meta property=\"og:type\" content=\"website\"><link rel=\"canonical\" href=\"http://www.lemonades.in/#!/group/%v\"/><meta property=\"og:url\" content=\"http://www.lemonades.in/group/%v/share/%v\"><meta property=\"og:url:width\" content=\"300\"><meta property=\"og:url:height\" content=\"300\"><meta property=\"og:title\" content=\"Buy %v with me on Lemonades.in\"><meta property=\"og:image\" content=\"%v\"><meta property=\"og:description\" content=\"%v\"><meta property=\"fb:app_id\" content=\"1608020712745966\"></head><body></body></html>", group.Id, group.Id, group.InterestedUsersCount, group.Product.Name, group.Product.ProductImage, groupText))
+}
+
 func LeaveGroup(w http.ResponseWriter, r *framework.Request) {
 	user := r.MustGet("user").(*models.User)
 	idString := bone.GetValue(r.Request, "id")
@@ -302,19 +329,19 @@ func CreateGroup(w http.ResponseWriter, r *framework.Request) {
 	logger.Debug("Creating new group")
 	group = &models.Group{}
 	if product.PriceValue < 5000 {
-		group.RequiredUserCount = 40
+		group.RequiredUserCount = 20
 	}
 	if product.PriceValue > 5000 && product.PriceValue < 10000 {
-		group.RequiredUserCount = 25
+		group.RequiredUserCount = 12
 	}
 	if product.PriceValue > 10000 && product.PriceValue < 25000 {
-		group.RequiredUserCount = 15
+		group.RequiredUserCount = 7
 	}
 	if product.PriceValue > 25000 && product.PriceValue < 75000 {
-		group.RequiredUserCount = 10
+		group.RequiredUserCount = 5
 	}
 	if product.PriceValue > 75000 {
-		group.RequiredUserCount = 7
+		group.RequiredUserCount = 3
 	}
 	group.Id = bson.NewObjectId()
 	group.MinDiscount = "10% Off"
