@@ -17,10 +17,6 @@
 			"Rev": "54abbbf07a45a3ef346ebe903e0715d9a3c19352"
 		},
 		{
-			"ImportPath": "github.com/getsentry/raven-go",
-			"Rev": "86cd4063c535cbbcbf43d84424dbd5911ab1b818"
-		},
-		{
 			"ImportPath": "github.com/go-zoo/bone",
 			"Rev": "bf0893da6ccb23623e95f00b1ce9c7a10fdb8508"
 		},
@@ -39,6 +35,11 @@
 		{
 			"ImportPath": "github.com/rcrowley/go-metrics",
 			"Rev": "dee209f2455f101a5e4e593dea94872d2c62d85d"
+		},
+		{
+			"ImportPath": "github.com/robfig/cron",
+			"Comment": "v1-2-g67823cd",
+			"Rev": "67823cd24dece1b04cced3a0a0b3ca2bc84d875e"
 		},
 		{
 			"ImportPath": "golang.org/x/net/html",
