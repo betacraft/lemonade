@@ -50,11 +50,11 @@ func RegisterUser(w http.ResponseWriter, r *http.Request) {
 			u = user
 		}
 		mail := email.NewEmail()
-		mail.From = "lemonades@rainingclouds.com"
+		mail.From = "groupup@rainingclouds.com"
 		mail.Subject = "Please confirm your email address"
-		mail.Text = []byte("Hello from Lemonades,\nPlease click on the following link to confirm your email address\nhttp://www.lemonades.in/#!/user/" + u.AuthKey + "/confirm_email")
+		mail.Text = []byte("Hello from GroupUP,\nPlease click on the following link to confirm your email address\nhttp://www.groupup.in/#!/user/" + u.AuthKey + "/confirm_email")
 		mailer.Send(u.Email, mail)
-		mail.Subject = fmt.Sprintf("%v requested access to lemonades", u.Name)
+		mail.Subject = fmt.Sprintf("%v requested access to groupup", u.Name)
 		mail.Text = []byte(fmt.Sprintf("%v is registered, please call him and update the status to akshay@rainingclouds.com", u))
 		mailer.SendToMany([]string{"amit@rainingclouds.com", "akshay@rainingclouds.com"}, mail)
 	}(user)
@@ -181,9 +181,9 @@ func ForgotPassword(w http.ResponseWriter, r *http.Request) {
 	}
 	go func(user *models.User) {
 		mail := email.NewEmail()
-		mail.From = "lemonades@rainingclouds.com"
+		mail.From = "groupup@rainingclouds.com"
 		mail.Subject = "Password reset instructions"
-		mail.Text = []byte("Hello User,\nClick on the link to reset your password:\nhttp://www.lemonades.in/#!/user/" + user.AuthKey + "/reset_password")
+		mail.Text = []byte("Hello User,\nClick on the link to reset your password:\nhttp://www.groupup.in/#!/user/" + user.AuthKey + "/reset_password")
 		mailer.Send(user.Email, mail)
 	}(user)
 	framework.WriteResponse(w, http.StatusOK, framework.JSONResponse{
