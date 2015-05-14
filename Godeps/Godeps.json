@@ -3,6 +3,14 @@
 	"GoVersion": "go1.4",
 	"Deps": [
 		{
+			"ImportPath": "github.com/AdRoll/goamz/aws",
+			"Rev": "e0af8b0b22517e9fb1d6a4438fa8269c3e834d2d"
+		},
+		{
+			"ImportPath": "github.com/AdRoll/goamz/s3",
+			"Rev": "e0af8b0b22517e9fb1d6a4438fa8269c3e834d2d"
+		},
+		{
 			"ImportPath": "github.com/PuerkitoBio/goquery",
 			"Comment": "v0.3.2-74-g5203bc0",
 			"Rev": "5203bc06dacf2192e0f4a9879010b9f14c861d14"
@@ -15,6 +23,10 @@
 		{
 			"ImportPath": "github.com/andybalholm/cascadia",
 			"Rev": "54abbbf07a45a3ef346ebe903e0715d9a3c19352"
+		},
+		{
+			"ImportPath": "github.com/disintegration/imaging",
+			"Rev": "3ab6ec550f20d497d2755ed3c48a3e45ad6b7eb9"
 		},
 		{
 			"ImportPath": "github.com/go-zoo/bone",
@@ -40,6 +52,14 @@
 			"ImportPath": "github.com/robfig/cron",
 			"Comment": "v1-2-g67823cd",
 			"Rev": "67823cd24dece1b04cced3a0a0b3ca2bc84d875e"
+		},
+		{
+			"ImportPath": "golang.org/x/image/bmp",
+			"Rev": "c5f9292598396797bde21d35a38a3da25f561f81"
+		},
+		{
+			"ImportPath": "golang.org/x/image/tiff",
+			"Rev": "c5f9292598396797bde21d35a38a3da25f561f81"
 		},
 		{
 			"ImportPath": "golang.org/x/net/html",
