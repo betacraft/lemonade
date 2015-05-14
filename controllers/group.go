@@ -94,13 +94,13 @@ func ShareGroup(w http.ResponseWriter, r *http.Request) {
 	var groupText string
 	switch group.InterestedUsersCount {
 	case 0:
-		groupText = fmt.Sprintf("Join with a group of people to buy %v with a huge group buying discount on Lemonades.in", group.Product.Name)
+		groupText = fmt.Sprintf("Join with a group of people to buy %v with a huge group buying discount on GroupUP.in", group.Product.Name)
 	case 1:
-		groupText = fmt.Sprintf("1 person is interested in buying %v. Join him on Lemonades.in and get huge group discount.", group.Product.Name)
+		groupText = fmt.Sprintf("1 person is interested in buying %v. Join him on GroupUP.in and get huge group discount.", group.Product.Name)
 	default:
-		groupText = fmt.Sprintf("%v people are interested in buying %v. Join them on Lemonades.in and get huge group discount.", group.InterestedUsersCount, group.Product.Name)
+		groupText = fmt.Sprintf("%v people are interested in buying %v. Join them on GroupUP.in and get huge group discount.", group.InterestedUsersCount, group.Product.Name)
 	}
-	framework.WriteText(w, fmt.Sprintf("<!DOCTYPE html><html><head><meta property=\"og:type\" content=\"website\"><link rel=\"canonical\" href=\"http://www.lemonades.in/#!/group/%v\"/><meta property=\"og:url\" content=\"http://www.lemonades.in/group/%v/share/%v\"><meta property=\"og:url:width\" content=\"300\"><meta property=\"og:url:height\" content=\"300\"><meta property=\"og:title\" content=\"Buy %v with me on Lemonades.in\"><meta property=\"og:image\" content=\"%v\"><meta property=\"og:description\" content=\"%v\"><meta property=\"fb:app_id\" content=\"1608020712745966\"></head><body></body></html>", group.Id, group.Id, group.InterestedUsersCount, group.Product.Name, group.Product.ProductImage, groupText))
+	framework.WriteText(w, fmt.Sprintf("<!DOCTYPE html><html><head><meta property=\"og:type\" content=\"website\"><link rel=\"canonical\" href=\"http://www.groupup.in/#!/group/%v\"/><meta property=\"og:url\" content=\"http://www.groupup.in/group/%v/share/%v\"><meta property=\"og:url:width\" content=\"300\"><meta property=\"og:url:height\" content=\"300\"><meta property=\"og:title\" content=\"Buy %v with me on Lemonades.in\"><meta property=\"og:image\" content=\"%v\"><meta property=\"og:description\" content=\"%v\"><meta property=\"fb:app_id\" content=\"1608020712745966\"></head><body></body></html>", group.Id, group.Id, group.InterestedUsersCount, group.Product.Name, group.Product.ProductImage, groupText))
 }
 
 func LeaveGroup(w http.ResponseWriter, r *framework.Request) {
@@ -189,7 +189,7 @@ func JoinGroup(w http.ResponseWriter, r *framework.Request) {
 		// send email notification to akshay
 		go func(group *models.Group) {
 			mail := email.NewEmail()
-			mail.From = "lemonades@rainingclouds.com"
+			mail.From = "groupup@rainingclouds.com"
 			mail.Subject = "Start getting deal for " + group.Product.Name
 			mail.Text = []byte("Group " + group.Id.Hex() + " is done with its expected users\n" + fmt.Sprintf("%v", group))
 			mailer.Send("akshay@rainingclouds.com", mail)

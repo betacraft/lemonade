@@ -24,7 +24,7 @@ func WriteError(w http.ResponseWriter, r *http.Request, c int, err error) {
 	logger.Get().Warning(err, "\n", strings.Trim(string(requstDump), "\n\r"))
 	w.Header().Add("Content-Type", "application/json")
 	if isProd {
-		w.Header().Add("Access-Control-Allow-Origin", "http://www.lemonades.in")
+		w.Header().Add("Access-Control-Allow-Origin", "http://www.groupup.in")
 	} else {
 		w.Header().Add("Access-Control-Allow-Origin", "*")
 	}
@@ -46,7 +46,7 @@ func WriteHtml(w http.ResponseWriter, tmpl string, data interface{}) {
 func WriteText(w http.ResponseWriter, text string) {
 	w.Header().Add("Content-Type", "text/html")
 	if isProd {
-		w.Header().Add("Access-Control-Allow-Origin", "http://www.lemonades.in")
+		w.Header().Add("Access-Control-Allow-Origin", "http://www.groupup.in")
 	} else {
 		w.Header().Add("Access-Control-Allow-Origin", "*")
 	}
@@ -60,7 +60,7 @@ func WriteText(w http.ResponseWriter, text string) {
 func WriteResponse(w http.ResponseWriter, c int, r JSONResponse) {
 	w.Header().Add("Content-Type", "application/json")
 	if isProd {
-		w.Header().Add("Access-Control-Allow-Origin", "http://www.lemonades.in")
+		w.Header().Add("Access-Control-Allow-Origin", "http://www.groupup.in")
 	} else {
 		w.Header().Add("Access-Control-Allow-Origin", "*")
 	}
