@@ -1,13 +1,21 @@
 package models
 
 import (
+	"bytes"
 	"errors"
 	"fmt"
+	"github.com/AdRoll/goamz/s3"
 	"github.com/PuerkitoBio/goquery"
+	"github.com/disintegration/imaging"
+	"github.com/rainingclouds/lemonades/aws"
 	"github.com/rainingclouds/lemonades/db"
 	"github.com/rainingclouds/lemonades/logger"
 	"gopkg.in/mgo.v2/bson"
+	"image"
+	"image/jpeg"
+	"io/ioutil"
 	"log"
+	"net/http"
 	"net/url"
 	"strconv"
 	"strings"
@@ -87,11 +95,68 @@ func (p *Product) UpdatePrice() error {
 
 func (p *Product) Create() error {
 	p.Id = bson.NewObjectId()
+	go p.ProcessImage()
 	return db.MgCreateStrong(C_PRODUCT, p)
+}
+
+func (p *Product) ProcessImage() {
+	client := http.Client{}
+	urlParts := strings.Split(p.ProductImage, "/")
+	imgName := urlParts[len(urlParts)-1]
+	logger.Debug("Image name is", imgName)
+	imgResponse, err := client.Get(p.ProductImage)
+	if err != nil {
+		logger.Err("Error while downloading the product image", err)
+		return
+	}
+	logger.Debug("Content length", imgResponse.ContentLength)
+	imgData, err := ioutil.ReadAll(imgResponse.Body)
+	if err != nil {
+		logger.Err("Error while copying the product image", err)
+		return
+	}
+	imgResponse.Body.Close()
+	err = aws.Bucket().Put(fmt.Sprintf("product/%v/default/%v", p.Id.Hex(), imgName), imgData, "image/jpeg", s3.PublicRead, s3.Options{})
+	if err != nil {
+		logger.Err("Error while uploading the basic image", err)
+		return
+	}
+	// resizing image to 300x300
+	img, _, err := image.Decode(bytes.NewReader(imgData))
+	if err != nil {
+		logger.Err("Error while converting bytes to image", err)
+		return
+	}
+	img300x300 := imaging.Resize(img, 300, 0, imaging.Lanczos)
+	buf := new(bytes.Buffer)
+	err = jpeg.Encode(buf, img300x300, nil)
+	err = aws.Bucket().Put(fmt.Sprintf("product/%v/300x300/%v", p.Id.Hex(), imgName), buf.Bytes(), "image/jpeg", s3.PublicRead, s3.Options{})
+	if err != nil {
+		logger.Err("Error while uploading the 300x300 image", err)
+		return
+	}
+	p.ProductImage = aws.Bucket().URL(fmt.Sprintf("product/%v/300x300/%v", p.Id.Hex(), imgName))
+	p.ProductImage = strings.Replace(p.ProductImage, "https", "http", -1)
+	err = p.Update()
+	if err != nil {
+		logger.Err("Error while saving product while processing image", err)
+		return
+	}
+	err = UpdateProductInfo(p)
+	if err != nil {
+		logger.Err("Error while saving product while processing image", err)
+		return
+	}
 }
 
 func (p *Product) Update() error {
 	return db.MgUpdateStrong(C_PRODUCT, p.Id, p)
+}
+
+func GetProductByName(name string) (*Product, error) {
+	product := new(Product)
+	err := db.MgFindOneStrong(C_PRODUCT, &bson.M{"name": name}, product)
+	return product, err
 }
 
 func GetProductById(id bson.ObjectId) (*Product, error) {
@@ -204,6 +269,15 @@ func FetchProductInfo(rawurl string) (*Product, error) {
 		if err != nil {
 			return nil, err
 		}
+		doc.Find(".title").Each(func(i int, s *goquery.Selection) {
+			itemprop, ok := s.Attr("itemprop")
+			if ok {
+				if itemprop == "name" {
+					log.Println(s.Text())
+					product.Name = s.Text()
+				}
+			}
+		})
 		doc.Find("meta").Each(func(i int, s *goquery.Selection) {
 			property, ok := s.Attr("property")
 			if ok {
@@ -214,15 +288,6 @@ func FetchProductInfo(rawurl string) (*Product, error) {
 						product.ProductImage = content
 						log.Println(content)
 					}
-				}
-			}
-		})
-		doc.Find(".title").Each(func(i int, s *goquery.Selection) {
-			itemprop, ok := s.Attr("itemprop")
-			if ok {
-				if itemprop == "name" {
-					log.Println(s.Text())
-					product.Name = s.Text()
 				}
 			}
 		})

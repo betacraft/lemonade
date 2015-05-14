@@ -41,3 +41,5 @@ echo "Adding cron"
 go get github.com/robfig/cron
 echo "Adding facebook graph API"
 go get github.com/huandu/facebook
+echo "Adding image resizing"
+go get github.com/disintegration/imaging

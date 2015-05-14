@@ -74,9 +74,7 @@ type User struct {
 	CreatedGroups *[]Group `bson:"-" json:"created_groups"`
 	JoinedGroups  *[]Group `bson:"-" json:"joined_groups"`
 
-	CreatedAt time.Time `bson:"created_at" json:"created_at"`
-	UpdatedAt time.Time `bson:"updated_at" json:"updated_at"`
-	DeletedAt time.Time `bson:"deleted_at" json:"deleted_at"`
+	Timestamp
 }
 
 func (u *User) FieldMap() binding.FieldMap {

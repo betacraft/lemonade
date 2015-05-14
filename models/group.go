@@ -68,6 +68,15 @@ func GetGroupByProductId(productId bson.ObjectId) (*Group, error) {
 	return group, err
 }
 
+func GetGroupByProduct(product *Product) (*Group, error) {
+	group := new(Group)
+	err := db.MgFindOneStrong(C_GROUP, &bson.M{"$or": []interface{}{
+		bson.M{"product._id": product.Id},
+		bson.M{"product.name": product.Name},
+	}}, group)
+	return group, err
+}
+
 func GetGroupById(id bson.ObjectId) (*Group, error) {
 	group := new(Group)
 	err := db.MgFindOneStrong(C_GROUP, &bson.M{"_id": id}, group)
@@ -77,5 +86,12 @@ func GetGroupById(id bson.ObjectId) (*Group, error) {
 func GetGroups(pageNo int) (*[]Group, error) {
 	groups := new([]Group)
 	err := db.MgFindPageSort(C_GROUP, &bson.M{"is_on": true}, "-interested_users_count", pageNo, groups)
+	return groups, err
+}
+
+func GetGroupsForSearchTerm(pageNo int, searchTerm string) (*[]Group, error) {
+	groups := new([]Group)
+
+	err := db.MgFindPageSort(C_GROUP, &bson.M{"is_on": true, "product.name": bson.RegEx{"(?i).*" + searchTerm + ".*", ""}}, "-interested_users_count", pageNo, groups)
 	return groups, err
 }

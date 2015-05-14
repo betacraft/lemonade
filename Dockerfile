@@ -20,8 +20,8 @@ ENV ENV prod
 ENV RESSY_PG_URL host=aasprs0iuoe3eo.cqoummlog10q.ap-southeast-1.rds.amazonaws.com user=akshay password=amdeo3116 dbname=ebdb sslmode=require
 ENV LEMN_MG_URI mongodb://web-app:web-app123456@ds031192-a0.mongolab.com:31192,ds031192-a1.mongolab.com:31192/lmnd?replicaSet=rs-ds031192
 ENV LEMN_MG_DB_NAME lmnd
-ENV SENDGRID_USER Akshay Deo
-ENV SENDGRID_KEY Ressy2015!
+ENV AWS_ACCESS AKIAINECWOX2MEE4UOSA
+ENV AWS_SECRET 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
 
 EXPOSE 80
 

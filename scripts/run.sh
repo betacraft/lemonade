@@ -4,6 +4,8 @@ export PATH=$PATH:$GOPATH/bin
 export ENV=dev
 export LEMN_MG_URI="mongodb://localhost:27017/lemonade2"
 export LEMN_MG_DB_NAME="lemonade2"
+export AWS_ACCESS="AKIAINECWOX2MEE4UOSA"
+export AWS_SECRET="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"
 # --
 echo Cleaning up
 go clean

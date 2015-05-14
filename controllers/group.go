@@ -98,7 +98,7 @@ func ShareGroup(w http.ResponseWriter, r *http.Request) {
 	case 1:
 		groupText = fmt.Sprintf("1 person is interested in buying %v. Join him on Lemonades.in and get huge group discount.", group.Product.Name)
 	default:
-		groupText = fmt.Sprintf("%v people is interested in buying %v. Join them on Lemonades.in and get huge group discount.", group.InterestedUsersCount, group.Product.Name)
+		groupText = fmt.Sprintf("%v people are interested in buying %v. Join them on Lemonades.in and get huge group discount.", group.InterestedUsersCount, group.Product.Name)
 	}
 	framework.WriteText(w, fmt.Sprintf("<!DOCTYPE html><html><head><meta property=\"og:type\" content=\"website\"><link rel=\"canonical\" href=\"http://www.lemonades.in/#!/group/%v\"/><meta property=\"og:url\" content=\"http://www.lemonades.in/group/%v/share/%v\"><meta property=\"og:url:width\" content=\"300\"><meta property=\"og:url:height\" content=\"300\"><meta property=\"og:title\" content=\"Buy %v with me on Lemonades.in\"><meta property=\"og:image\" content=\"%v\"><meta property=\"og:description\" content=\"%v\"><meta property=\"fb:app_id\" content=\"1608020712745966\"></head><body></body></html>", group.Id, group.Id, group.InterestedUsersCount, group.Product.Name, group.Product.ProductImage, groupText))
 }
@@ -223,7 +223,20 @@ func GetGroups(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		pageNo = 0
 	}
-	groups, err := models.GetGroups(pageNo)
+	searchTerm := r.URL.Query().Get("search")
+	if searchTerm == "" {
+		groups, err := models.GetGroups(pageNo)
+		if err != nil {
+			framework.WriteError(w, r, http.StatusInternalServerError, err)
+			return
+		}
+		framework.WriteResponse(w, http.StatusOK, framework.JSONResponse{
+			"success": true,
+			"groups":  groups,
+		})
+		return
+	}
+	groups, err := models.GetGroupsForSearchTerm(pageNo, searchTerm)
 	if err != nil {
 		framework.WriteError(w, r, http.StatusInternalServerError, err)
 		return
@@ -232,6 +245,7 @@ func GetGroups(w http.ResponseWriter, r *http.Request) {
 		"success": true,
 		"groups":  groups,
 	})
+	return
 }
 
 func GetGroup(w http.ResponseWriter, r *http.Request) {
@@ -314,7 +328,7 @@ func CreateGroup(w http.ResponseWriter, r *framework.Request) {
 		framework.WriteError(w, r.Request, http.StatusBadRequest, errors.New("Minimum cost of the product should be more than 1000 Rs"))
 		return
 	}
-	group, err := models.GetGroupByProductId(product.Id)
+	group, err := models.GetGroupByProduct(product)
 	if err != nil && err.Error() != "not found" {
 		framework.WriteError(w, r.Request, http.StatusInternalServerError, err)
 		return
@@ -420,21 +434,22 @@ func AdminCreateGroup(w http.ResponseWriter, r *framework.Request) {
 	logger.Debug("Creating new group")
 	group = &models.Group{}
 	if product.PriceValue < 5000 {
-		group.RequiredUserCount = 40
+		group.RequiredUserCount = 20
 	}
 	if product.PriceValue > 5000 && product.PriceValue < 10000 {
-		group.RequiredUserCount = 25
+		group.RequiredUserCount = 12
 	}
 	if product.PriceValue > 10000 && product.PriceValue < 25000 {
-		group.RequiredUserCount = 15
-	}
-	if product.PriceValue > 25000 && product.PriceValue < 75000 {
-		group.RequiredUserCount = 10
-	}
-	if product.PriceValue > 75000 {
 		group.RequiredUserCount = 7
 	}
+	if product.PriceValue > 25000 && product.PriceValue < 75000 {
+		group.RequiredUserCount = 5
+	}
+	if product.PriceValue > 75000 {
+		group.RequiredUserCount = 3
+	}
 	group.Id = bson.NewObjectId()
+	group.MinDiscount = "10% Off"
 	group.CreatedBy = admin.Id
 	group.Product = *product
 	group.ExpiresOn = time.Now().Add(time.Hour * 24 * 30)

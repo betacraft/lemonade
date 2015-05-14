@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/go-zoo/bone"
+	"github.com/rainingclouds/lemonades/aws"
 	"github.com/rainingclouds/lemonades/db"
 	"github.com/rainingclouds/lemonades/interceptors"
 	"github.com/rainingclouds/lemonades/logger"
@@ -43,6 +44,7 @@ func main() {
 	}
 	logger.Debug("Initializing mongo : Done")
 	defer db.CloseMongo()
+	aws.Init()
 	mailer.Init()
 	// initializing routes
 	logger.Debug("Initializing routes")
