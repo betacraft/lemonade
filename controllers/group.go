@@ -100,7 +100,7 @@ func ShareGroup(w http.ResponseWriter, r *http.Request) {
 	default:
 		groupText = fmt.Sprintf("%v people are interested in buying %v. Join them on GroupUP.in and get huge group discount.", group.InterestedUsersCount, group.Product.Name)
 	}
-	framework.WriteText(w, fmt.Sprintf("<!DOCTYPE html><html><head><meta property=\"og:type\" content=\"website\"><link rel=\"canonical\" href=\"http://www.groupup.in/#!/group/%v\"/><meta property=\"og:url\" content=\"http://www.groupup.in/group/%v/share/%v\"><meta property=\"og:url:width\" content=\"300\"><meta property=\"og:url:height\" content=\"300\"><meta property=\"og:title\" content=\"Buy %v with me on Lemonades.in\"><meta property=\"og:image\" content=\"%v\"><meta property=\"og:description\" content=\"%v\"><meta property=\"fb:app_id\" content=\"1608020712745966\"></head><body></body></html>", group.Id, group.Id, group.InterestedUsersCount, group.Product.Name, group.Product.ProductImage, groupText))
+	framework.WriteText(w, fmt.Sprintf("<!DOCTYPE html><html><head><meta property=\"og:type\" content=\"website\"><link rel=\"canonical\" href=\"http://www.groupup.in/#!/group/%v\"/><meta property=\"og:url\" content=\"http://www.groupup.in/group/%v/share/%v\"><meta property=\"og:url:width\" content=\"300\"><meta property=\"og:url:height\" content=\"300\"><meta property=\"og:title\" content=\"Buy %v with me on GroupUP.in\"><meta property=\"og:image\" content=\"%v\"><meta property=\"og:description\" content=\"%v\"><meta property=\"fb:app_id\" content=\"1608020712745966\"></head><body></body></html>", group.Id, group.Id, group.InterestedUsersCount, group.Product.Name, group.Product.ProductImage, groupText))
 }
 
 func LeaveGroup(w http.ResponseWriter, r *framework.Request) {
@@ -324,8 +324,8 @@ func CreateGroup(w http.ResponseWriter, r *framework.Request) {
 		framework.WriteError(w, r.Request, http.StatusInternalServerError, err)
 		return
 	}
-	if product.PriceValue < 1000 {
-		framework.WriteError(w, r.Request, http.StatusBadRequest, errors.New("Minimum cost of the product should be more than 1000 Rs"))
+	if product.PriceValue < 999 {
+		framework.WriteError(w, r.Request, http.StatusBadRequest, errors.New("Minimum cost of the product should be more than 999 Rs"))
 		return
 	}
 	group, err := models.GetGroupByProduct(product)

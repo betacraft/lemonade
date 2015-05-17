@@ -191,7 +191,7 @@ func (u *User) Create() error {
 		return err
 	}
 	if user.Id != "" {
-		return errors.New("You are already registered with Lemonades")
+		return errors.New("You are already registered with GroupUP")
 	}
 	authKey, err := uuid.NewV4()
 	if err != nil {

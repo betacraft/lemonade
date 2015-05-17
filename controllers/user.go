@@ -32,7 +32,7 @@ func RegisterUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if !captcha.Validate(response) {
-		framework.WriteError(w, r, http.StatusBadRequest, errors.New("Illegal Request"))
+		framework.WriteError(w, r, http.StatusBadRequest, errors.New("ReCaptcha response is invalid"))
 		return
 	}
 	user.OtpCode = framework.GenerateOtp()
