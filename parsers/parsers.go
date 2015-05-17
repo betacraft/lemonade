@@ -21,6 +21,14 @@ func Parse(rawUrl string) (*Item, error) {
 		fallthrough
 	case "amazon.in":
 		return parseAmazon(uri)
+	case "www.snapdeal.com":
+		fallthrough
+	case "snapdeal.com":
+		return parseSnapdeal(uri)
+	case "www.paytm.com":
+		fallthrough
+	case "paytm.com":
+		return parsePaytm(uri)
 	default:
 		return nil, errors.New("Please use flipkart/amazon urls")
 	}

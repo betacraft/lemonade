@@ -377,6 +377,13 @@ func CreateGroup(w http.ResponseWriter, r *framework.Request) {
 		framework.WriteError(w, r.Request, http.StatusInternalServerError, err)
 		return
 	}
+	go func(group *models.Group, user *models.User) {
+		mail := email.NewEmail()
+		mail.From = "groupup@rainingclouds.com"
+		mail.Subject = "Group is created for " + group.Product.Name
+		mail.Text = []byte("New group is created by " + user.Name + " Email " + user.Email + " Phone number " + user.MobileNumber + " Group " + fmt.Sprintf("%v", group))
+		mailer.Send("akshay@rainingclouds.com", mail)
+	}(group, user)
 	framework.WriteResponse(w, http.StatusOK, framework.JSONResponse{
 		"success": true,
 		"group":   group,
