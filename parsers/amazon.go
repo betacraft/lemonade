@@ -37,5 +37,34 @@ func parseAmazon(url *url.URL) (*Item, error) {
 			item.SubCategory = strings.TrimSpace(s.Text())
 		}
 	})
+	item.Attributes = map[string]string{}
+	var key string
+	var value string
+	done := false
+	doc.Find(".pdClearfix").Children().Children().Children().Children().Each(func(i int, s *goquery.Selection) {
+		s.Children().Each(func(i int, s *goquery.Selection) {
+			if s.Children().HasClass("groupHead") || done {
+				return
+			}
+			s.Children().Each(func(i int, s *goquery.Selection) {
+				if done {
+					return
+				}
+				if s.HasClass("label") {
+					key, _ = s.Html()
+					log.Println(key)
+				}
+				if s.HasClass("value") {
+					value, _ = s.Html()
+					log.Println(strings.TrimSpace(value))
+				}
+				item.Attributes[key] = value
+				if strings.TrimSpace(key) == "Customer Reviews" {
+					log.Println("done")
+					done = true
+				}
+			})
+		})
+	})
 	return item, nil
 }

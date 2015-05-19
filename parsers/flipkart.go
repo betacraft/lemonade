@@ -63,5 +63,26 @@ func parseFlipkart(url *url.URL) (*Item, error) {
 			item.SubCategory = strings.TrimSpace(s.Text())
 		}
 	})
+	item.Attributes = map[string]string{}
+	var key string
+	var value string
+	doc.Find(".specSection").Children().Children().Each(func(i int, s *goquery.Selection) {
+		s.Children().Each(func(i int, s *goquery.Selection) {
+			if s.Children().HasClass("groupHead") {
+				return
+			}
+			s.Children().Each(func(i int, s *goquery.Selection) {
+				if s.HasClass("specsKey") {
+					key, _ = s.Html()
+					log.Println(key)
+				}
+				if s.HasClass("specsValue") {
+					value, _ = s.Html()
+					log.Println(strings.TrimSpace(value))
+				}
+				item.Attributes[key] = value
+			})
+		})
+	})
 	return item, nil
 }
