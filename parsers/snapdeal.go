@@ -56,18 +56,16 @@ func parseSnapdeal(url *url.URL) (*Item, error) {
 	var value string
 	doc.Find(".detailssubbox").Children().Children().Children().Children().Each(func(i int, s *goquery.Selection) {
 		s.Children().Each(func(i int, s *goquery.Selection) {
-
 			s.Children().Children().Children().Each(func(i int, s *goquery.Selection) {
 				if i == 0 {
 					return
 				}
 				if i%2 != 0 {
-					key = s.Text()
+					key = strings.TrimSpace(s.Text())
 				} else {
-					value = s.Text()
+					value = strings.TrimSpace(s.Text())
 				}
 				item.Attributes[key] = value
-
 			})
 		})
 

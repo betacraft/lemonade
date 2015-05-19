@@ -52,11 +52,13 @@ func parseAmazon(url *url.URL) (*Item, error) {
 				}
 				if s.HasClass("label") {
 					key, _ = s.Html()
+					key = strings.TrimSpace(key)
 					log.Println(key)
 				}
 				if s.HasClass("value") {
 					value, _ = s.Html()
-					log.Println(strings.TrimSpace(value))
+					value = strings.TrimSpace(value)
+					log.Println(value)
 				}
 				item.Attributes[key] = value
 				if strings.TrimSpace(key) == "Customer Reviews" {

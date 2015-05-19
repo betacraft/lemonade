@@ -2,6 +2,7 @@ package parsers
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/PuerkitoBio/goquery"
 	"log"
 	"net/url"
@@ -32,5 +33,9 @@ func parsePaytm(url *url.URL) (*Item, error) {
 	item.SubCategory = ""
 	item.PriceValue = int64(data["offer_price"].(float64))
 	item.PriceCurrency = "Rs"
+	item.Attributes = map[string]string{}
+	for key, value := range data["attributes"].(map[string]interface{}) {
+		item.Attributes[key] = fmt.Sprintf("%v", value)
+	}
 	return item, nil
 }

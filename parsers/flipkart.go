@@ -74,10 +74,15 @@ func parseFlipkart(url *url.URL) (*Item, error) {
 			s.Children().Each(func(i int, s *goquery.Selection) {
 				if s.HasClass("specsKey") {
 					key, _ = s.Html()
+					key = strings.TrimSpace(key)
 					log.Println(key)
 				}
 				if s.HasClass("specsValue") {
+					if strings.TrimSpace(s.Children().Text()) != "" {
+						return
+					}
 					value, _ = s.Html()
+					value = strings.TrimSpace(value)
 					log.Println(strings.TrimSpace(value))
 				}
 				item.Attributes[key] = value

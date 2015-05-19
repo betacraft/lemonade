@@ -13,24 +13,24 @@ import (
 // 	log.Println(item)
 // }
 
-// func TestFlipkart(t *testing.T) {
-// 	item, err := Parse("http://www.flipkart.com/spice-smart-pulse-m-9010-smartwatch/p/itmeyfaq7gjgq4kf?pid=SMWEYF9SAZKGSG93&icmpid=reco_pp_personalhistoryFooter_storage_na_1")
-// 	if err != nil {
-// 		t.Error(err)
-// 	}
-// 	log.Println(item)
-// }
-
-func TestSnapdeal(t *testing.T) {
-	item, err := Parse("http://www.snapdeal.com/product/infocus-m330/682019088263?")
+func TestFlipkart(t *testing.T) {
+	item, err := Parse("http://www.flipkart.com/htc-one-max/p/itmdqrpcg9tzkrs7")
 	if err != nil {
 		t.Error(err)
 	}
 	log.Println(item)
 }
 
+// func TestSnapdeal(t *testing.T) {
+// 	item, err := Parse("http://www.snapdeal.com/product/infocus-m330/682019088263?")
+// 	if err != nil {
+// 		t.Error(err)
+// 	}
+// 	log.Println(item)
+// }
+
 // func TestPaytm(t *testing.T) {
-// 	item, err := Parse("https://paytm.com/shop/p/wd-elements-2-5-inch-1-tb-external-hard-disk-black-cmplxwd_elements_1tb_black_168")
+// 	item, err := Parse("https://paytm.com/shop/p/flow-bluetooth-speakers-for-4-1-home-theater-system-computer-tv-usb-mmc-remote-fm-CMPLXFLOW_FLBT41BL_HOMETHEATERSPKR_BLACK")
 // 	if err != nil {
 // 		t.Error(err)
 // 	}

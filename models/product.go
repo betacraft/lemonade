@@ -28,6 +28,11 @@ type Price struct {
 	PriceCurrency string    `json:"price_currency" bson:"price_currency"`
 }
 
+type Attribute struct {
+	Name  string `json:"name" bson:"name"`
+	Value string `json:"value" bson:"value"`
+}
+
 type Product struct {
 	Id      bson.ObjectId   `json:"id" bson:"_id,omitempty"`
 	AddedBy []bson.ObjectId `json:"added_by" bson:"added_by"`
@@ -44,8 +49,8 @@ type Product struct {
 
 	PriceHistory []Price `json:"price_history" bson:"price_history"`
 
-	Description string            `json:"description" bson:"description"`
-	Attributes  map[string]string `json:"attributes" bson:"attributes"`
+	Description string      `json:"description" bson:"description"`
+	Specs       []Attribute `json:"specs" bson:"specs"`
 
 	Timestamp
 }
@@ -73,6 +78,62 @@ func UpdateProductPrices() {
 			return
 		}
 	}
+}
+
+func UpdateAllProductInfo() {
+	pageNo := 0
+	products := new([]Product)
+	var i int
+	err := db.MgFindPage(C_PRODUCT, &bson.M{}, pageNo, products)
+	if err != nil {
+		logger.Err("Error while updating price of products", err)
+	}
+	for len(*products) > 0 {
+		for i = 0; i < len(*products); i++ {
+			err = (*products)[i].UpdateInfo()
+			if err != nil {
+				logger.Err("Error while updating info", err)
+				continue
+			}
+			err = UpdateProductInfo(&(*products)[i])
+			if err != nil {
+				logger.Err("Error while updating info", err)
+				continue
+			}
+		}
+		pageNo = pageNo + 1
+		err = db.MgFindPage(C_PRODUCT, &bson.M{}, pageNo, products)
+		if err != nil {
+			logger.Err("Error while updating price of products page no %d", pageNo, err)
+			return
+		}
+	}
+}
+
+func (p *Product) UpdateInfo() error {
+	item, err := parsers.Parse(p.ProductLink)
+	if err != nil {
+		return err
+	}
+	p.Name = item.Name
+	p.ProductLink = item.ProductLink
+	p.ProductImage = item.ProductImage
+	p.MainCategory = item.MainCategory
+	p.SubCategory = item.SubCategory
+	p.PriceValue = item.PriceValue
+	p.PriceCurrency = item.PriceCurrency
+	price := new(Price)
+	price.Date = time.Now().UTC()
+	price.PriceValue = item.PriceValue
+	price.PriceCurrency = item.PriceCurrency
+	p.PriceHistory = []Price{}
+	p.PriceHistory = append(p.PriceHistory, *price)
+	p.Description = item.Description
+	p.Specs = []Attribute{}
+	for key, value := range item.Attributes {
+		p.Specs = append(p.Specs, Attribute{Name: key, Value: value})
+	}
+	return p.Update()
 }
 
 func (p *Product) UpdatePrice() error {
@@ -217,6 +278,9 @@ func FetchProductInfo(rawurl string) (*Product, error) {
 	product.PriceHistory = []Price{}
 	product.PriceHistory = append(product.PriceHistory, *price)
 	product.Description = item.Description
-	product.Attributes = item.Attributes
+	product.Specs = []Attribute{}
+	for key, value := range item.Attributes {
+		product.Specs = append(product.Specs, Attribute{Name: key, Value: value})
+	}
 	return product, nil
 }
