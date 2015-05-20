@@ -52,7 +52,6 @@ func main() {
 	pushRoutes(mux)
 	logger.Debug("Running server on ", getPort())
 	startCronJobs()
-	models.UpdateAllProductInfo()
 	http.ListenAndServe(getPort(), interceptors.NewInterceptor(mux))
 	logger.Warn("Closing server")
 }

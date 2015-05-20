@@ -142,6 +142,9 @@ func (p *Product) UpdatePrice() error {
 		logger.Err("While fetching price", p, err)
 		return err
 	}
+	if price.PriceValue == p.PriceValue {
+		return nil
+	}
 	p.PriceHistory = append(p.PriceHistory, *price)
 	p.PriceValue = price.PriceValue
 	err = p.Update()

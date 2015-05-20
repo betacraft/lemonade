@@ -25,6 +25,7 @@ type Group struct {
 	ReachedGoal   int64     `json:"reached_goal" bson:"-"`
 
 	MinDiscount string `json:"min_discount" bson:"min_discount"`
+	SaveAmount  int64  `json:"save_amount" bson:"-"`
 
 	ExpiresOn time.Time `json:"expires_on" bson:"expires_on"`
 	IsOn      bool      `json:"is_on" bson:"is_on"`

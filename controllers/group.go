@@ -12,6 +12,7 @@ import (
 	"gopkg.in/mgo.v2/bson"
 	"net/http"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -156,6 +157,13 @@ func LeaveGroup(w http.ResponseWriter, r *framework.Request) {
 
 func JoinGroup(w http.ResponseWriter, r *framework.Request) {
 	user := r.MustGet("user").(*models.User)
+	if !user.IsAccessEnabled {
+		framework.WriteResponse(w, http.StatusOK, framework.JSONResponse{
+			"success": false,
+			"message": "Your access to this functionality is disabled. Kindly mail us on support@rainingclouds.com",
+		})
+		return
+	}
 	idString := bone.GetValue(r.Request, "id")
 	if idString == "" {
 		framework.WriteError(w, r.Request, http.StatusBadRequest, errors.New("Illegal group id"))
@@ -281,7 +289,16 @@ func GetGroup(w http.ResponseWriter, r *http.Request) {
 	if group.InterestedUsersCount >= group.RequiredUserCount {
 		group.ReachedGoal = int64(time.Now().Sub(group.ReachedGoalOn).Hours() / 24)
 	}
-
+	percentage, err := strconv.ParseInt(strings.Split(group.MinDiscount, "%")[0], 10, 64)
+	if err != nil {
+		group.SaveAmount = -1
+		framework.WriteResponse(w, http.StatusOK, framework.JSONResponse{
+			"success": true,
+			"group":   group,
+		})
+		return
+	}
+	group.SaveAmount = group.Product.PriceValue * percentage / 100
 	framework.WriteResponse(w, http.StatusOK, framework.JSONResponse{
 		"success": true,
 		"group":   group,
@@ -290,6 +307,13 @@ func GetGroup(w http.ResponseWriter, r *http.Request) {
 
 func CreateGroup(w http.ResponseWriter, r *framework.Request) {
 	user := r.MustGet("user").(*models.User)
+	if !user.IsAccessEnabled {
+		framework.WriteResponse(w, http.StatusOK, framework.JSONResponse{
+			"success": false,
+			"message": "Your access to this functionality is disabled. Kindly mail us on support@rainingclouds.com",
+		})
+		return
+	}
 	bodyMap, err := framework.ReadBody(r.Request)
 	if err != nil {
 		framework.WriteError(w, r.Request, http.StatusBadRequest, err)

@@ -38,18 +38,18 @@ func parseFlipkart(url *url.URL) (*Item, error) {
 			}
 		}
 	})
-	doc.Find(".seller-table-wrap").Each(func(i int, s *goquery.Selection) {
-		dataConfig, ok := s.Attr("data-config")
-		if ok && strings.Contains(dataConfig, "sellingPrice") {
-			item.PriceValue, _ = strconv.ParseInt(strings.Split(strings.Split(dataConfig, "\"sellingPrice\":")[1], ",")[0], 10, 64)
+	doc.Find(".selling-price").Each(func(i int, s *goquery.Selection) {
+		if i == 0 {
+			val := strings.TrimSpace(strings.Split(s.Text(), "Rs.")[1])
+			item.PriceValue, _ = strconv.ParseInt(strings.Replace(val, ",", "", -1), 10, 64)
 			item.PriceCurrency = "Rs"
 		}
 	})
 	if item.PriceValue == 0 {
-		doc.Find(".selling-price").Each(func(i int, s *goquery.Selection) {
-			if i == 0 {
-				val := strings.TrimSpace(strings.Split(s.Text(), "Rs.")[1])
-				item.PriceValue, _ = strconv.ParseInt(strings.Replace(val, ",", "", -1), 10, 64)
+		doc.Find(".seller-table-wrap").Each(func(i int, s *goquery.Selection) {
+			dataConfig, ok := s.Attr("data-config")
+			if ok && strings.Contains(dataConfig, "sellingPrice") {
+				item.PriceValue, _ = strconv.ParseInt(strings.Split(strings.Split(dataConfig, "\"sellingPrice\":")[1], ",")[0], 10, 64)
 				item.PriceCurrency = "Rs"
 			}
 		})
